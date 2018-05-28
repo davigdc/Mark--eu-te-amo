@@ -31,13 +31,26 @@ bool Vazia(Pilha *pilha){
 
 void Empilhar(Pilha *pilha, Dado_bagagem dado){
 
-    Celula_bagagem *temp = (Celula_bagagem*) malloc(sizeof(Celula_bagagem));
-    temp->dado = dado;
-    temp->prox = pilha->topo;
+bool valido=true;
 
-    pilha->topo = temp;
+    for(Celula_bagagem *temp = pilha->topo; temp!=NULL; temp=temp->prox){
+        if(temp->dado.cpf==dado.cpf){
+            cout<<"\tCPF cadastrado ja possui bagagem cadastrada!";
+            valido=false;
+        }
+    }
 
-    pilha->tam++;
+    if(valido){
+
+        Celula_bagagem *temp = (Celula_bagagem*) malloc(sizeof(Celula_bagagem));
+        temp->dado = dado;
+        temp->prox = pilha->topo;
+
+        pilha->topo = temp;
+
+        pilha->tam++;
+
+    }
 }
 
 Dado_bagagem Desempilhar(Pilha *pilha){
@@ -91,11 +104,13 @@ int main()
 {
     Pilha *bagagem=(Pilha*) malloc (sizeof(Pilha));
     Inicializar_bagagem(bagagem);
-    Dado_bagagem a={1234, 64};
-    Dado_bagagem b={1236, 87};
+    Dado_bagagem a={13623, 64};
+    Dado_bagagem b={31502, 87};
+    Dado_bagagem c={13623, 90};
 
     Empilhar(bagagem, a);
     Empilhar(bagagem, b);
+    Empilhar(bagagem, c);
 
     Imprimir(bagagem);
 
