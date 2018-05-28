@@ -7,6 +7,11 @@ struct passageiro{
     int telefone;
 };
 
+struct aviao{
+    int id;
+    int poltrona;
+};
+
 using namespace std;
 
 int main()
