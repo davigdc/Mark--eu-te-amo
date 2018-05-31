@@ -3,6 +3,138 @@
 #include <stdlib.h>
 
 using namespace std;
+
+//----------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
+struct Passageiro{
+    int cpf;
+    char nome[30];
+    char endereco[30];
+    int telefone;
+};
+
+struct Celula_passageiro{
+    Passageiro dado;
+    Celula_passageiro *prox;
+};
+
+struct Lista{
+    Celula_passageiro *inicio, *fim;
+    int tam;
+};
+
+void Inicializar(Lista *lista){
+    lista->inicio = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
+    lista->inicio->prox = NULL;
+    lista->fim = lista->inicio;
+    lista->tam = 0;
+}
+
+bool Vazia(Lista *lista){
+    return lista->inicio == lista->fim;
+}
+
+void Inserir(Lista *lista, Passageiro dado){
+
+    Celula_passageiro *temp = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
+    temp->dado = dado;
+    temp->prox = NULL;
+
+    lista->fim->prox = temp;
+    lista->fim = temp;
+
+    lista->tam++;
+}
+
+Passageiro Cadastro_passageiro(Lista *lista, int n){
+Passageiro aux;
+
+    for(int i=0; i<n; i++){
+
+        cout<<"\nNumero do CPF: ";
+        cin>>aux.cpf;
+
+            for(Celula_passageiro *temp=lista->inicio; temp!=NULL; temp=temp->prox){
+                if(aux.cpf==temp->dado.cpf){
+                    cout<<"CPF ja cadastrado, insira outro: ";
+                    cin>>aux.cpf;
+                    temp=lista->inicio;
+                }
+            }
+
+        cin.ignore();
+        cout<<"\nNome completo: ";
+        gets(aux.nome);
+
+        cout<<"\nEndereco: ";
+        gets(aux.endereco);
+
+        cout<<"\nTelefone: ";
+        cin>>aux.telefone;
+
+        Inserir(lista, aux);
+    }
+
+return aux;
+}
+
+Passageiro Remover(Lista *lista, int pos){
+
+    // SE A LISTA NÃO POSSUIR A POSICAO INFORMADA RETORNA -1
+    if(pos < 1 || pos > lista->tam)
+        cout<<"\nPosicao nao encontrada" ;
+
+    // CRIA UM PONTEIRO PARA A CELULA SENTINELA
+    Celula_passageiro *CelAnt = lista->inicio;
+
+    // MOVE O PONTEIRO ATÉ A CELULAR ANTERIOR QUE SERA REMOVIDA
+    for(int i=0; i<pos-1; i++) CelAnt=CelAnt->prox;
+
+    // CRIA UM PONTEIRO PARA A CELULA QUE SERA REMOVIDO
+    Celula_passageiro *temp = CelAnt->prox;
+
+    // ATUALIZA O PONTEIRO DA LISTA
+    CelAnt->prox = temp->prox;
+
+    // ARMAZENA O DADO QUE SERA RETORNADO
+    Passageiro dado = temp->dado;
+    // LIBERA A MEMORIA DA CELULA REMOVIDA
+    free(temp);
+    // DIMINUI O TAMANHO DA LISTA
+    lista->tam--;
+
+    // RETORNA O DADO QUE ESTA NO INICIO DA LISTA
+    return dado;
+}
+
+// PROCEDIMENTO PARA IMPRIMIR OS DADOS DA LISTA
+// DEVE SER ADAPATADO PARA O TIPO DE DADO UTILIZADO!
+void Imprimir_lista(Lista *lista){
+    printf("\n\tTamanho da Lista: %i\n", lista->tam);
+    for(Celula_passageiro *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
+        printf("CPF: %i ", temp->dado.cpf);
+        printf("\nNOME: %s ", temp->dado.nome);
+        printf("\nENDERECO: %s ", temp->dado.endereco);
+        printf("\nTELEFONE: %i \n\n", temp->dado.telefone);
+    }
+}
+
+// PROCEDIMENTO PARA RETORNAR O TAMANHO DA LISTA
+int Tamanho(Lista *lista){
+    return lista->tam;
+}
+
+// PROCEDIMENTO PARA FINALIZAR A LISTA
+void Finalizar(Lista *lista){
+    // ESVAZIA A LISTA
+    while(!Vazia(lista))
+        Remover(lista,1);
+
+    // LIBERA MEMORIA DO SENTINELA
+    free(lista->inicio);
+}
+
+//===============================================
+
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A PILHA DE BAGAGENS
 struct Dado_bagagem{
     int cpf;
@@ -40,6 +172,26 @@ void Empilhar(Pilha *pilha, Dado_bagagem dado){
     pilha->tam++;
 }
 
+Dado_bagagem Cadastro_bagagem(Pilha *pilha, int n){
+Dado_bagagem aux;
+
+    for(int i=0; i<n; i++){
+        cout<<"CPF do portador da bagagem: ";
+        cin>>aux.cpf;
+        /*
+            for(Celula_bagagem *temp=pilha->topo; temp!=NULL; temp=temp->prox){
+                if()
+
+            }
+        */
+        cout<<"\nPeso da bagagem: ";
+        cin>>aux.peso;
+
+        Empilhar(pilha, aux);
+    }
+
+}
+
 Dado_bagagem Desempilhar(Pilha *pilha){
 
     if(Vazia(pilha)){
@@ -73,13 +225,6 @@ void Finalizar(Pilha *pilha){
 
 // --------------------------------------------------------------------------------
 
-struct passageiro{
-    string nome;
-    int cpf;
-    string endereco;
-    int telefone;
-};
-
 struct aviao{
     int id;
     int poltrona;
@@ -89,8 +234,12 @@ using namespace std;
 
 int main()
 {
+    Lista *tripulantes=(Lista*) malloc (sizeof(Lista));
     Pilha *bagagem=(Pilha*) malloc (sizeof(Pilha));
     Inicializar_bagagem(bagagem);
+    Inicializar(tripulantes);
+
+/*
     Dado_bagagem a={1234, 64};
     Dado_bagagem b={1236, 87};
 
@@ -98,9 +247,17 @@ int main()
     Empilhar(bagagem, b);
 
     Imprimir(bagagem);
+*/
 
+    Passageiro c={136237, "davi goncalves", "rua", 938003};
+    Passageiro d={136245, "fernando goncalves", "rua jair", 938233};
+    Inserir(tripulantes, c);
+    Inserir(tripulantes, d);
+    Cadastro_passageiro(tripulantes, 2);
+
+    Imprimir_lista(tripulantes);
     free(bagagem);
-
+    free(tripulantes);
 
     return 0;
 }
