@@ -4,7 +4,7 @@
 
 using namespace std;
 
-//----------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
+// -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
 struct Passageiro{
     int cpf;
     char nome[30];
@@ -17,23 +17,23 @@ struct Celula_passageiro{
     Celula_passageiro *prox;
 };
 
-struct Lista{
+struct Lista_passageiro{
     Celula_passageiro *inicio, *fim;
     int tam;
 };
 
-void Inicializar(Lista *lista){
+void Inicializar(Lista_passageiro *lista){
     lista->inicio = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
     lista->inicio->prox = NULL;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
 
-bool Vazia(Lista *lista){
+bool Vazia(Lista_passageiro *lista){
     return lista->inicio == lista->fim;
 }
 
-void Inserir(Lista *lista, Passageiro dado){
+void Inserir(Lista_passageiro *lista, Passageiro dado){
 
     Celula_passageiro *temp = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
     temp->dado = dado;
@@ -45,7 +45,7 @@ void Inserir(Lista *lista, Passageiro dado){
     lista->tam++;
 }
 
-Passageiro Cadastro_passageiro(Lista *lista, int n){
+Passageiro Cadastro_passageiro(Lista_passageiro *lista, int n){
 Passageiro aux;
 
     for(int i=0; i<n; i++){
@@ -77,7 +77,7 @@ Passageiro aux;
 return aux;
 }
 
-Passageiro Remover(Lista *lista, int pos){
+Passageiro Remover(Lista_passageiro *lista, int pos){
 
     // SE A LISTA NÃO POSSUIR A POSICAO INFORMADA RETORNA -1
     if(pos < 1 || pos > lista->tam)
@@ -108,7 +108,7 @@ Passageiro Remover(Lista *lista, int pos){
 
 // PROCEDIMENTO PARA IMPRIMIR OS DADOS DA LISTA
 // DEVE SER ADAPATADO PARA O TIPO DE DADO UTILIZADO!
-void Imprimir_lista(Lista *lista){
+void Imprimir_lista(Lista_passageiro *lista){
     printf("\n\tTamanho da Lista: %i\n", lista->tam);
     for(Celula_passageiro *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
         printf("CPF: %i ", temp->dado.cpf);
@@ -119,12 +119,12 @@ void Imprimir_lista(Lista *lista){
 }
 
 // PROCEDIMENTO PARA RETORNAR O TAMANHO DA LISTA
-int Tamanho(Lista *lista){
+int Tamanho(Lista_passageiro *lista){
     return lista->tam;
 }
 
 // PROCEDIMENTO PARA FINALIZAR A LISTA
-void Finalizar(Lista *lista){
+void Finalizar(Lista_passageiro *lista){
     // ESVAZIA A LISTA
     while(!Vazia(lista))
         Remover(lista,1);
@@ -133,7 +133,7 @@ void Finalizar(Lista *lista){
     free(lista->inicio);
 }
 
-//===============================================
+// --------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A PILHA DE BAGAGENS
 struct Dado_bagagem{
@@ -147,21 +147,21 @@ struct Celula_bagagem{
     Celula_bagagem *prox;
 };
 
-struct Pilha{
+struct Pilha_bagagem{
     Celula_bagagem *topo;
     int tam;
 };
 
-void Inicializar_bagagem(Pilha *pilha){
+void Inicializar_bagagem(Pilha_bagagem *pilha){
     pilha->topo = NULL;
     pilha->tam = 0;
 }
 
-bool Vazia(Pilha *pilha){
+bool Vazia(Pilha_bagagem *pilha){
     return pilha->topo==NULL;
 }
 
-void Empilhar(Pilha *pilha, Dado_bagagem dado){
+void Empilhar(Pilha_bagagem *pilha, Dado_bagagem dado){
 
     Celula_bagagem *temp = (Celula_bagagem*) malloc(sizeof(Celula_bagagem));
     temp->dado = dado;
@@ -172,7 +172,7 @@ void Empilhar(Pilha *pilha, Dado_bagagem dado){
     pilha->tam++;
 }
 
-Dado_bagagem Cadastro_bagagem(Pilha *pilha, int n){
+Dado_bagagem Cadastro_bagagem(Pilha_bagagem *pilha, int n){
 Dado_bagagem aux;
 
     for(int i=0; i<n; i++){
@@ -192,7 +192,7 @@ Dado_bagagem aux;
 
 }
 
-Dado_bagagem Desempilhar(Pilha *pilha){
+Dado_bagagem Desempilhar(Pilha_bagagem *pilha){
 
     if(Vazia(pilha)){
         cout<<"\nPilha vazia!";
@@ -207,7 +207,7 @@ Dado_bagagem Desempilhar(Pilha *pilha){
     return dado;}
 }
 
-void Imprimir(Pilha *pilha){
+void Imprimir(Pilha_bagagem *pilha){
     printf("\n\tTamanho da Pilha: %i\n", pilha->tam);
     for(Celula_bagagem *temp = pilha->topo; temp!=NULL; temp=temp->prox){
         cout<<"\nCPF passageiro: "<<temp->dado.cpf;
@@ -217,7 +217,7 @@ void Imprimir(Pilha *pilha){
 }
 
 // PROCEDIMENTO PARA FINALIZAR A PILHA
-void Finalizar(Pilha *pilha){
+void Finalizar(Pilha_bagagem *pilha){
     // ESVAZIA A PILHA
     while(!Vazia(pilha))
         Desempilhar(pilha);
@@ -234,10 +234,11 @@ using namespace std;
 
 int main()
 {
-    Lista *tripulantes=(Lista*) malloc (sizeof(Lista));
-    Pilha *bagagem=(Pilha*) malloc (sizeof(Pilha));
+    Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
+    Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
     Inicializar_bagagem(bagagem);
     Inicializar(tripulantes);
+
 
 /*
     Dado_bagagem a={1234, 64};
@@ -249,6 +250,7 @@ int main()
     Imprimir(bagagem);
 */
 
+/*
     Passageiro c={136237, "davi goncalves", "rua", 938003};
     Passageiro d={136245, "fernando goncalves", "rua jair", 938233};
     Inserir(tripulantes, c);
@@ -256,6 +258,7 @@ int main()
     Cadastro_passageiro(tripulantes, 2);
 
     Imprimir_lista(tripulantes);
+*/
     free(bagagem);
     free(tripulantes);
 
