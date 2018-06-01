@@ -225,20 +225,92 @@ void Finalizar(Pilha_bagagem *pilha){
 
 // --------------------------------------------------------------------------------
 
-struct aviao{
+// --------------------------------------------------------------------------------
+
+struct Aviao{
     int id;
-    int poltrona;
+    bool poltrona[10];
 };
 
-using namespace std;
+struct Celula_aviao{
+    Aviao dado;
+    Celula_aviao * aterior, * prox;
+};
 
-int main()
-{
+struct Lista_aviao{
+    Celula_aviao * inicio, * fim;
+    int tam;
+};
+
+void Inicializar_aviao(Lista_aviao * lista){
+    lista->inicio = (Celula_aviao*) malloc(sizeof(Celula_aviao));
+    lista->inicio->prox = NULL;
+    lista->fim = lista->inicio;
+    lista->tam = 0;
+}
+
+bool Vazia(Lista_aviao * lista){
+    for(int i = 0; i < 10; i++){
+            lista->inicio->dado.poltrona[i] = false;
+
+        }
+    return lista->tam == 0;
+}
+
+void Inserir_aviao(Lista_aviao * lista, Aviao dado){
+
+    Celula_aviao *temp = (Celula_aviao*) malloc(sizeof(Celula_aviao));
+    temp->dado = dado;
+    temp->prox = NULL;
+
+    lista->fim->prox = temp;
+    lista->fim = temp;
+
+    lista->tam++;
+}
+
+void Imprimir_lista_aviao(Lista_aviao *lista){
+    printf("\n\tTamanho da Lista: %i\n", lista->tam);
+    for(Celula_aviao *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
+        printf("ID: %i ", temp->dado.id);
+        for(int i = 0; i < 10; i++){
+            printf("\Poltrona %i: %s ", i, temp->dado.poltrona[i]);
+        }
+    }
+}
+
+struct voo{
+    int id;
+    string destino;
+
+};
+int main(){
+
+    voo voos[3];
+    Aviao avioes[3];
+
+    avioes[0].id = 0;
+    avioes[1].id = 1;
+    avioes[2].id = 2;
+
+    voos[0].destino = "BH -> SÃO PAULO";
+    voos[1].destino = "BH -> RIO";
+    voos[2].destino = "BH -> SALVADOR";
+
+    voos[0].id = 0;
+    voos[1].id = 1;
+    voos[2].id = 2;
+
     Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
     Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
     Inicializar_bagagem(bagagem);
     Inicializar(tripulantes);
 
+    Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
+    Inicializar_aviao(l_avioes);
+    Imprimir_lista_aviao(l_avioes);
+    Inserir_aviao(l_avioes, avioes[0]);
+    Imprimir_lista_aviao(l_avioes);
 
 /*
     Dado_bagagem a={1234, 64};
