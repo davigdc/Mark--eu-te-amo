@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 using namespace std;
-
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
 struct Passageiro{
     int cpf;
@@ -105,6 +104,19 @@ Passageiro Remover(Lista_passageiro *lista, int pos){
     return dado;
 }
 
+Passageiro pesquisaPassageiro( Lista_passageiro * l,int cpf){
+    Celula_passageiro * aux;
+
+    aux = l->inicio->prox;
+
+    while(aux != NULL){
+        if(aux->dado.cpf == cpf){
+            return aux->dado;
+        } else {
+            aux = aux->prox;
+        }
+    }
+}
 // PROCEDIMENTO PARA IMPRIMIR OS DADOS DA LISTA
 // DEVE SER ADAPATADO PARA O TIPO DE DADO UTILIZADO!
 void Imprimir_lista(Lista_passageiro *lista){
@@ -257,6 +269,9 @@ bool Vazia(Lista_aviao * lista){
 
 void Inserir_aviao(Lista_aviao * lista, Aviao dado){
     Celula_aviao *temp = (Celula_aviao*) malloc(sizeof(Celula_aviao));
+    if(temp == NULL){
+        return ;
+    }
     temp->dado = dado;
     temp->prox = NULL;
     for(int i = 0; i < 10; i++){
@@ -281,6 +296,13 @@ struct voo{
     int id;
     int aviao_id;
     string destino;
+};
+
+struct passagens{
+    int passagem_id;
+    int voo_id;
+    int passageiro_id;
+    int poltrona_id;
 };
 
 int main(){
@@ -310,6 +332,7 @@ int main(){
     Imprimir_lista_aviao(l_avioes);
     Inserir_aviao(l_avioes, avioes[0]);
     Imprimir_lista_aviao(l_avioes);
+
 
 /*
     Dado_bagagem a={1234, 64};
