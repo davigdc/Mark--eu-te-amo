@@ -4,7 +4,6 @@
 #include <string.h>
 #include <locale.h>
 using namespace std;
-
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
 struct Passageiro{
     int cpf;
@@ -111,14 +110,14 @@ free(aux);
 
 Passageiro Remover(Lista_passageiro *lista, int pos){
 
-    // SE A LISTA N√O POSSUIR A POSICAO INFORMADA RETORNA -1
+    // SE A LISTA N√ÉO POSSUIR A POSICAO INFORMADA RETORNA -1
     if(pos < 1 || pos > lista->tam)
         cout<<"\nPosicao nao encontrada" ;
 
     // CRIA UM PONTEIRO PARA A CELULA SENTINELA
     Celula_passageiro *CelAnt = lista->inicio;
 
-    // MOVE O PONTEIRO AT… A CELULAR ANTERIOR QUE SERA REMOVIDA
+    // MOVE O PONTEIRO AT√â A CELULAR ANTERIOR QUE SERA REMOVIDA
     for(int i=0; i<pos-1; i++) CelAnt=CelAnt->prox;
 
     // CRIA UM PONTEIRO PARA A CELULA QUE SERA REMOVIDO
@@ -138,6 +137,19 @@ Passageiro Remover(Lista_passageiro *lista, int pos){
     return dado;
 }
 
+Passageiro pesquisaPassageiro( Lista_passageiro * l,int cpf){
+    Celula_passageiro * aux;
+
+    aux = l->inicio->prox;
+
+    while(aux != NULL){
+        if(aux->dado.cpf == cpf){
+            return aux->dado;
+        } else {
+            aux = aux->prox;
+        }
+    }
+}
 // PROCEDIMENTO PARA IMPRIMIR OS DADOS DA LISTA
 // DEVE SER ADAPATADO PARA O TIPO DE DADO UTILIZADO!
 void Imprimir_lista(Lista_passageiro *lista){
@@ -290,6 +302,9 @@ bool Vazia(Lista_aviao * lista){
 
 void Inserir_aviao(Lista_aviao * lista, Aviao dado){
     Celula_aviao *temp = (Celula_aviao*) malloc(sizeof(Celula_aviao));
+    if(temp == NULL){
+        return ;
+    }
     temp->dado = dado;
     temp->prox = NULL;
     for(int i = 0; i < 10; i++){
@@ -316,10 +331,17 @@ struct voo{
     string destino;
 };
 
+struct passagens{
+    int passagem_id;
+    int voo_id;
+    int passageiro_id;
+    int poltrona_id;
+};
+
 int main(){
 FILE *arq_passageiro;
 
-/*
+
     voo voos[3];
     Aviao avioes[3];
 
@@ -327,30 +349,29 @@ FILE *arq_passageiro;
     avioes[1].id = 1;
     avioes[2].id = 2;
 
-    voos[0].destino = "BH -> S√O PAULO";
+    voos[0].destino = "BH -> S√ÉO PAULO";
     voos[1].destino = "BH -> RIO";
     voos[2].destino = "BH -> SALVADOR";
 
     voos[0].id = 0;
     voos[1].id = 1;
     voos[2].id = 2;
-*/
+
     Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
     Inicializar(tripulantes);
     OpenFile_passageiros(tripulantes);
 
-    //Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
+    Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
 
 
-    //Inicializar_bagagem(bagagem);
+    Inicializar_bagagem(bagagem);
 
-/*
+
     Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
     Inicializar_aviao(l_avioes);
     Imprimir_lista_aviao(l_avioes);
     Inserir_aviao(l_avioes, avioes[0]);
     Imprimir_lista_aviao(l_avioes);
-
 
     Dado_bagagem a={1234, 64};
     Dado_bagagem b={1236, 87};
@@ -359,7 +380,7 @@ FILE *arq_passageiro;
     Empilhar(bagagem, b);
 
     Imprimir(bagagem);
-*/
+
 
     //Cadastro_passageiro(arq_passageiro, tripulantes, 2);
 
