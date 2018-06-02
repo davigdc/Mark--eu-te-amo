@@ -53,13 +53,13 @@ Passageiro aux;
         cout<<"\nNumero do CPF: ";
         cin>>aux.cpf;
 
-            for(Celula_passageiro *temp=lista->inicio; temp!=NULL; temp=temp->prox){
-                if(aux.cpf==temp->dado.cpf){
-                    cout<<"CPF ja cadastrado, insira outro: ";
-                    cin>>aux.cpf;
-                    temp=lista->inicio;
-                }
+        for(Celula_passageiro *temp=lista->inicio; temp!=NULL; temp=temp->prox){
+            if(aux.cpf==temp->dado.cpf){
+                cout<<"CPF ja cadastrado, insira outro: ";
+                cin>>aux.cpf;
+                temp=lista->inicio;
             }
+        }
 
         cin.ignore();
         cout<<"\nNome completo: ";
@@ -73,8 +73,7 @@ Passageiro aux;
 
         Inserir(lista, aux);
     }
-
-return aux;
+    return aux;
 }
 
 Passageiro Remover(Lista_passageiro *lista, int pos){
