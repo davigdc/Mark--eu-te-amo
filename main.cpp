@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+
 using namespace std;
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
 struct Passageiro{
@@ -59,7 +60,7 @@ Passageiro aux;
 
     for(int i=0; i<n; i++){
 
-    cout<<"\tPassageiro :"<<i+1;
+        cout<<"\tPassageiro :"<<i+1;
         cout<<"\nNumero do CPF: ";
         cin>>aux.cpf;
 
@@ -144,6 +145,11 @@ Passageiro pesquisaPassageiro( Lista_passageiro * l,int cpf){
 
     while(aux != NULL){
         if(aux->dado.cpf == cpf){
+            printf("\nNUMERO DO CPF: %i", aux->dado.cpf);
+            printf("\nNOME COMPLETO: %s", aux->dado.nome);
+            printf("\nENDEREÇO: %s", aux->dado.endereco);
+            printf("\nTELEFONE: %i", aux->dado.telefone);
+            cout<<endl;
             return aux->dado;
         } else {
             aux = aux->prox;
@@ -381,6 +387,7 @@ struct passagens{
 };
 
 int main(){
+    setlocale(LC_ALL,"portuguese");
 
     voo voos[3];
     Aviao avioes[3];
@@ -418,9 +425,10 @@ int main(){
     //Cadastro_bagagem(arq_bagagem, bagagem, 2);
     Imprimir_lista_bagagem(bagagem);
 
-
     //Cadastro_passageiro(arq_passageiro, tripulantes, 1);
     Imprimir_lista_passageiros(tripulantes);
+
+    pesquisaPassageiro(tripulantes, 123);
 
 
     free(bagagem);
