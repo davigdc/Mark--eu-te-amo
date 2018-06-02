@@ -6,8 +6,10 @@
 	<string.h>
 	<locale.h>
 
-1527957271 source:c:\users\juanl\documents\dev\mark-trab-3\main.cpp
+1527977639 source:c:\users\juanl\documents\dev\mark-trab-3\main.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
+	<string.h>
+	<locale.h>
 
