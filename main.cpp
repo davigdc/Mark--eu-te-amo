@@ -1,7 +1,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include <locale.h>
 using namespace std;
 
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
@@ -33,7 +34,7 @@ bool Vazia(Lista_passageiro *lista){
     return lista->inicio == lista->fim;
 }
 
-void Inserir(Lista_passageiro *lista, Passageiro dado){
+void Inserir_lista_passageiro(Lista_passageiro *lista, Passageiro dado){
 
     Celula_passageiro *temp = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
     temp->dado = dado;
@@ -45,11 +46,21 @@ void Inserir(Lista_passageiro *lista, Passageiro dado){
     lista->tam++;
 }
 
-Passageiro Cadastro_passageiro(Lista_passageiro *lista, int n){
+void Gravar_arquivos_passageiros (FILE *arq, Passageiro dado){
+arq= fopen("dados_passageiros.txt", "a+");
+    if (arq == NULL) {
+        cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
+    }else{
+        fprintf(arq, "%i\t%s\t%s\t%i\n", dado.cpf, dado.nome, dado.endereco, dado.telefone);
+    }
+}
+
+Passageiro Cadastro_passageiro(FILE *arq, Lista_passageiro *lista, int n){
 Passageiro aux;
 
     for(int i=0; i<n; i++){
 
+    cout<<"\tPassageiro :"<<i+1;
         cout<<"\nNumero do CPF: ";
         cin>>aux.cpf;
 
@@ -71,9 +82,31 @@ Passageiro aux;
         cout<<"\nTelefone: ";
         cin>>aux.telefone;
 
-        Inserir(lista, aux);
+        Inserir_lista_passageiro(lista, aux);
+        Gravar_arquivos_passageiros(arq, aux);
+        cout<<endl;
     }
     return aux;
+}
+
+void OpenFile_passageiros(Lista_passageiro *lista){
+Celula_passageiro *aux = (Celula_passageiro*) malloc (sizeof(Celula_passageiro));
+    if(aux == NULL){
+        cout<<"\n\tNao ha memoria disponivel!";
+    } else {
+        FILE *arq=fopen("dados_passageiros.txt", "r");
+        if(arq){
+            cout<<"\tLendo arquivo de passageiros...\n";
+            while(!feof(arq)){
+                if(!feof(arq)){
+                    fscanf(arq, "%i\t%[^\t]\t%[^\t]\t%i\n", &aux->dado.cpf, &aux->dado.nome, &aux->dado.endereco, &aux->dado.telefone);
+                    //printf("%i\t%s\t%s\t%i\n", aux->dado.cpf, aux->dado.nome, aux->dado.endereco, aux->dado.telefone);
+                    Inserir_lista_passageiro(lista, aux->dado);
+                }
+            }
+        }
+    }
+free(aux);
 }
 
 Passageiro Remover(Lista_passageiro *lista, int pos){
@@ -284,7 +317,9 @@ struct voo{
 };
 
 int main(){
+FILE *arq_passageiro;
 
+/*
     voo voos[3];
     Aviao avioes[3];
 
@@ -299,19 +334,24 @@ int main(){
     voos[0].id = 0;
     voos[1].id = 1;
     voos[2].id = 2;
-
+*/
     Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
-    Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
-    Inicializar_bagagem(bagagem);
     Inicializar(tripulantes);
+    OpenFile_passageiros(tripulantes);
 
+    //Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
+
+
+    //Inicializar_bagagem(bagagem);
+
+/*
     Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
     Inicializar_aviao(l_avioes);
     Imprimir_lista_aviao(l_avioes);
     Inserir_aviao(l_avioes, avioes[0]);
     Imprimir_lista_aviao(l_avioes);
 
-/*
+
     Dado_bagagem a={1234, 64};
     Dado_bagagem b={1236, 87};
 
@@ -321,16 +361,12 @@ int main(){
     Imprimir(bagagem);
 */
 
-/*
-    Passageiro c={136237, "davi goncalves", "rua", 938003};
-    Passageiro d={136245, "fernando goncalves", "rua jair", 938233};
-    Inserir(tripulantes, c);
-    Inserir(tripulantes, d);
-    Cadastro_passageiro(tripulantes, 2);
+    //Cadastro_passageiro(arq_passageiro, tripulantes, 2);
 
     Imprimir_lista(tripulantes);
-*/
-    free(bagagem);
+
+
+    //free(bagagem);
     free(tripulantes);
 
     return 0;
