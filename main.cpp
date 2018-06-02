@@ -139,7 +139,7 @@ void Finalizar(Lista_passageiro *lista){
 struct Dado_bagagem{
     int cpf;
     int peso;
-//    passageiro *tripulante;
+//  passageiro *tripulante;
 };
 
 struct Celula_bagagem{
@@ -186,7 +186,6 @@ Dado_bagagem aux;
         */
         cout<<"\nPeso da bagagem: ";
         cin>>aux.peso;
-
         Empilhar(pilha, aux);
     }
 
@@ -230,6 +229,7 @@ void Finalizar(Pilha_bagagem *pilha){
 struct Aviao{
     int id;
     bool poltrona[10];
+    int destino_id;
 };
 
 struct Celula_aviao{
@@ -251,39 +251,39 @@ void Inicializar_aviao(Lista_aviao * lista){
 
 bool Vazia(Lista_aviao * lista){
     for(int i = 0; i < 10; i++){
-            lista->inicio->dado.poltrona[i] = false;
-
-        }
+        lista->inicio->dado.poltrona[i] = false;
+    }
     return lista->tam == 0;
 }
 
 void Inserir_aviao(Lista_aviao * lista, Aviao dado){
-
     Celula_aviao *temp = (Celula_aviao*) malloc(sizeof(Celula_aviao));
     temp->dado = dado;
     temp->prox = NULL;
-
+    for(int i = 0; i < 10; i++){
+        temp->dado.poltrona[i] = false;
+    }
     lista->fim->prox = temp;
     lista->fim = temp;
-
     lista->tam++;
 }
 
 void Imprimir_lista_aviao(Lista_aviao *lista){
     printf("\n\tTamanho da Lista: %i\n", lista->tam);
     for(Celula_aviao *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
-        printf("ID: %i ", temp->dado.id);
+        printf("ID: %i \n", temp->dado.id);
         for(int i = 0; i < 10; i++){
-            printf("\Poltrona %i: %s ", i, temp->dado.poltrona[i]);
+            printf("Poltrona %i: %s \n", i, temp->dado.poltrona[i] ? "Ocupado":"Livre");
         }
     }
 }
 
 struct voo{
     int id;
+    int aviao_id;
     string destino;
-
 };
+
 int main(){
 
     voo voos[3];
