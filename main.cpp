@@ -23,7 +23,7 @@ struct Lista_passageiro{
     int tam;
 };
 
-void Inicializar(Lista_passageiro *lista){
+void Inicializar_passageiro(Lista_passageiro *lista){
     lista->inicio = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
     lista->inicio->prox = NULL;
     lista->inicio->anterior = NULL;
@@ -31,7 +31,7 @@ void Inicializar(Lista_passageiro *lista){
     lista->tam = 0;
 }
 
-bool Vazia(Lista_passageiro *lista){
+bool Vazia_passageiro(Lista_passageiro *lista){
     return lista->inicio == lista->fim;
 }
 
@@ -112,7 +112,7 @@ Celula_passageiro *aux = (Celula_passageiro*) malloc (sizeof(Celula_passageiro))
 free(aux);
 }
 
-Passageiro Remover(Lista_passageiro *lista, int pos){
+Passageiro Remover_passageiro(Lista_passageiro *lista, int pos){
 
     // SE A LISTA NÃO POSSUIR A POSICAO INFORMADA RETORNA -1
     if(pos < 1 || pos > lista->tam)
@@ -159,10 +159,9 @@ Passageiro pesquisaPassageiro( Lista_passageiro * l,int cpf){
         }
     }
 }
-// PROCEDIMENTO PARA IMPRIMIR OS DADOS DA LISTA
-// DEVE SER ADAPATADO PARA O TIPO DE DADO UTILIZADO!
-void Imprimir_lista(Lista_passageiro *lista){
-    printf("\n\tTamanho da Lista: %i\n", lista->tam);
+
+void Imprimir_lista_passageiros(Lista_passageiro *lista){
+    printf("\n\tTamanho da lista de passageiros: %i\n", lista->tam);
     for(Celula_passageiro *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
         printf("CPF: %i ", temp->dado.cpf);
         printf("\nNOME: %s ", temp->dado.nome);
@@ -171,108 +170,151 @@ void Imprimir_lista(Lista_passageiro *lista){
     }
 }
 
-// PROCEDIMENTO PARA RETORNAR O TAMANHO DA LISTA
-int Tamanho(Lista_passageiro *lista){
+int Tamanho_lista_passageiro(Lista_passageiro *lista){
     return lista->tam;
 }
 
-// PROCEDIMENTO PARA FINALIZAR A LISTA
 void Finalizar(Lista_passageiro *lista){
-    // ESVAZIA A LISTA
-    while(!Vazia(lista))
-        Remover(lista,1);
-
-    // LIBERA MEMORIA DO SENTINELA
-    free(lista->inicio);
+    while(!Vazia_passageiro(lista))
+        Remover_passageiro(lista,1);
+        free(lista->inicio);
 }
 
 // --------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A PILHA DE BAGAGENS
-struct Dado_bagagem{
+struct Bagagem{
     int cpf;
     int peso;
 //  passageiro *tripulante;
 };
 
 struct Celula_bagagem{
-    Dado_bagagem dado;
+    Bagagem dado;
     Celula_bagagem *prox;
 };
 
-struct Pilha_bagagem{
-    Celula_bagagem *topo;
+struct Lista_bagagem{
+    Celula_bagagem *inicio, *fim;
     int tam;
 };
 
-void Inicializar_bagagem(Pilha_bagagem *pilha){
-    pilha->topo = NULL;
-    pilha->tam = 0;
+void Inicializar_bagagem(Lista_bagagem *lista){
+    lista->inicio = (Celula_bagagem*) malloc(sizeof(Celula_bagagem));
+    lista->inicio->prox = NULL;
+    lista->fim = lista->inicio;
+    lista->tam = 0;
 }
 
-bool Vazia(Pilha_bagagem *pilha){
-    return pilha->topo==NULL;
+bool Vazia_bagagem(Lista_bagagem *lista){
+    return lista->inicio==lista->fim;
 }
 
-void Empilhar(Pilha_bagagem *pilha, Dado_bagagem dado){
+void Inserir_lista_bagagem(Lista_bagagem *lista, Bagagem dado){
 
     Celula_bagagem *temp = (Celula_bagagem*) malloc(sizeof(Celula_bagagem));
     temp->dado = dado;
-    temp->prox = pilha->topo;
+    temp->prox = NULL;
 
-    pilha->topo = temp;
+    lista->fim->prox = temp;
+    lista->fim = temp;
 
-    pilha->tam++;
+    lista->tam++;
 }
 
-Dado_bagagem Cadastro_bagagem(Pilha_bagagem *pilha, int n){
-Dado_bagagem aux;
+void Gravar_arquivos_bagagem (FILE *arq, Bagagem dado){
+arq= fopen("dados_bagagens.txt", "a+");
+    if (arq == NULL) {
+        cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
+    }else{
+        fprintf(arq, "%i\t%i\n", dado.cpf,dado.peso);
+    }
+}
+
+Bagagem Cadastro_bagagem(FILE *arq, Lista_bagagem *lista, int n){
+Bagagem aux;
 
     for(int i=0; i<n; i++){
-        cout<<"CPF do portador da bagagem: ";
+    cout<<"\tCadastro de bagagem: "<<i+1;
+        cout<<"\nCPF do portador da bagagem: ";
         cin>>aux.cpf;
-        /*
-            for(Celula_bagagem *temp=pilha->topo; temp!=NULL; temp=temp->prox){
-                if()
 
-            }
-        */
-        cout<<"\nPeso da bagagem: ";
+        cout<<"Peso da bagagem: ";
         cin>>aux.peso;
-        Empilhar(pilha, aux);
+
+        Inserir_lista_bagagem(lista, aux);
+        Gravar_arquivos_bagagem(arq, aux);
+        cout<<endl;
     }
 
 }
 
-Dado_bagagem Desempilhar(Pilha_bagagem *pilha){
-
-    if(Vazia(pilha)){
-        cout<<"\nPilha vazia!";
-    }else{
-
-    Dado_bagagem dado = pilha->topo->dado;
-    Celula_bagagem *temp = pilha->topo;
-    pilha->topo = pilha->topo->prox;
-    free(temp);
-    pilha->tam--;
-
-    return dado;}
+void OpenFile_bagagens(Lista_bagagem *lista){
+Celula_bagagem *aux = (Celula_bagagem*) malloc (sizeof(Celula_bagagem));
+    if(aux == NULL){
+        cout<<"\n\tNao ha memoria disponivel!";
+    } else {
+        FILE *arq=fopen("dados_bagagens.txt", "r");
+        if(arq){
+            cout<<"\tLendo arquivo de bagagens...\n";
+            while(!feof(arq)){
+                if(!feof(arq)){
+                    fscanf(arq, "%i\t%i\n", &aux->dado.cpf, &aux->dado.peso);
+                    //printf("%i\t%i\n", aux->dado.cpf, aux->dado.peso);
+                    Inserir_lista_bagagem(lista, aux->dado);
+                }
+            }
+        }
+    }
+free(aux);
 }
 
-void Imprimir(Pilha_bagagem *pilha){
-    printf("\n\tTamanho da Pilha: %i\n", pilha->tam);
-    for(Celula_bagagem *temp = pilha->topo; temp!=NULL; temp=temp->prox){
+Bagagem Remover_bagagem(Lista_bagagem *lista, int pos){
+
+    // SE A LISTA NÃO POSSUIR A POSICAO INFORMADA RETORNA -1
+    if(pos < 1 || pos > lista->tam)
+        cout<<"\nPosicao nao encontrada" ;
+
+    // CRIA UM PONTEIRO PARA A CELULA SENTINELA
+    Celula_bagagem *CelAnt = lista->inicio;
+
+    // MOVE O PONTEIRO ATÉ A CELULAR ANTERIOR QUE SERA REMOVIDA
+    for(int i=0; i<pos-1; i++) CelAnt=CelAnt->prox;
+
+    // CRIA UM PONTEIRO PARA A CELULA QUE SERA REMOVIDO
+    Celula_bagagem *temp = CelAnt->prox;
+
+    // ATUALIZA O PONTEIRO DA LISTA
+    CelAnt->prox = temp->prox;
+
+    // ARMAZENA O DADO QUE SERA RETORNADO
+    Bagagem dado = temp->dado;
+    // LIBERA A MEMORIA DA CELULA REMOVIDA
+    free(temp);
+    // DIMINUI O TAMANHO DA LISTA
+    lista->tam--;
+
+    // RETORNA O DADO QUE ESTA NO INICIO DA LISTA
+    return dado;
+}
+
+void Imprimir_lista_bagagem(Lista_bagagem *lista){
+    printf("\n\tTamanho da lista de bagagem: %i\n", lista->tam);
+    for(Celula_bagagem *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
         cout<<"\nCPF passageiro: "<<temp->dado.cpf;
         cout<<"\nPeso bagagem: "<<temp->dado.peso;
         cout<<endl;
     }
 }
 
-// PROCEDIMENTO PARA FINALIZAR A PILHA
-void Finalizar(Pilha_bagagem *pilha){
-    // ESVAZIA A PILHA
-    while(!Vazia(pilha))
-        Desempilhar(pilha);
+int Tamanho_lista_bagagem(Lista_bagagem *lista){
+    return lista->tam;
+}
+
+void Finalizar_lista_bagagem(Lista_bagagem *lista){
+    while(!Vazia_bagagem(lista))
+        Remover_bagagem(lista, 1);
+        free(lista->inicio);
 }
 
 // --------------------------------------------------------------------------------
@@ -387,7 +429,11 @@ void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_
 
 int main(){
     setlocale(LC_ALL,"portuguese");
+<<<<<<< HEAD
     FILE *arq_passageiro;
+=======
+
+>>>>>>> 1673774f3b3793465bfa2067735311ca423bf897
     voo voos[3];
     Aviao avioes[3];
 
@@ -403,6 +449,7 @@ int main(){
     voos[1].id = 1;
     voos[2].id = 2;
 
+<<<<<<< HEAD
     avioes[0].destino_id = 0;
     avioes[1].destino_id = 1;
     avioes[2].destino_id = 2;
@@ -419,12 +466,26 @@ int main(){
     OpenFile_passageiros(tripulantes);
     Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
     Inicializar_bagagem(bagagem);
+=======
+    Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
+    Inicializar_passageiro(tripulantes);
+    FILE *arq_passageiro;
+    OpenFile_passageiros(tripulantes);
+
+    Lista_bagagem *bagagem=(Lista_bagagem*) malloc (sizeof(Lista_bagagem));
+    Inicializar_bagagem(bagagem);
+    FILE *arq_bagagem;
+    OpenFile_bagagens(bagagem);
+
+
+>>>>>>> 1673774f3b3793465bfa2067735311ca423bf897
     Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
     Inicializar_aviao(l_avioes);
     Imprimir_lista_aviao(l_avioes);
     Inserir_aviao(l_avioes, avioes[0]);
     Imprimir_lista_aviao(l_avioes);
 
+<<<<<<< HEAD
     Dado_bagagem a={1234, 64};
     Dado_bagagem b={1236, 87};
 
@@ -435,10 +496,20 @@ int main(){
     //Cadastro_passageiro(arq_passageiro, tripulantes, 2);
 
     Imprimir_lista(tripulantes);
+=======
+
+    //Cadastro_bagagem(arq_bagagem, bagagem, 2);
+    Imprimir_lista_bagagem(bagagem);
+
+    //Cadastro_passageiro(arq_passageiro, tripulantes, 1);
+    Imprimir_lista_passageiros(tripulantes);
+
+>>>>>>> 1673774f3b3793465bfa2067735311ca423bf897
     pesquisaPassageiro(tripulantes, 123);
 
-    //free(bagagem);
-    free(tripulantes);
 
+    free(bagagem);
+    free(tripulantes);
+    free(l_avioes);
     return 0;
 }
