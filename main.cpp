@@ -9,10 +9,10 @@ using namespace std;
 
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
 struct Passageiro{
-    int cpf;
+    int64_t cpf;
     char nome[30];
     char endereco[30];
-    int telefone;
+    int64_t telefone;
 };
 
 struct Celula_passageiro{
@@ -53,7 +53,7 @@ arq= fopen("dados_passageiros.txt", "a+");
     if (arq == NULL) {
         cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
     }else{
-        fprintf(arq, "%i\t%s\t%s\t%i\n", dado.cpf, dado.nome, dado.endereco, dado.telefone);
+        fprintf(arq, "%lld\t%s\t%s\t%lld\n", dado.cpf, dado.nome, dado.endereco, dado.telefone);
     }
 }
 
@@ -180,7 +180,7 @@ void Finalizar(Lista_passageiro *lista){
 
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE BAGAGENS
 struct Bagagem{
-    int cpf;
+    int64_t cpf;
     int peso;
 //  passageiro *tripulante;
 };
@@ -223,7 +223,7 @@ arq= fopen("dados_bagagens.txt", "a+");
     if (arq == NULL) {
         cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
     }else{
-        fprintf(arq, "%i\t%i\n", dado.cpf,dado.peso);
+        fprintf(arq, "%lld\t%i\n", dado.cpf,dado.peso);
     }
 }
 
@@ -315,7 +315,7 @@ void Finalizar_lista_bagagem(Lista_bagagem *lista){
 struct Aviao{
     int id;
     bool poltrona[10];
-    int destino_id;
+    string destino_id;
 };
 
 struct Celula_aviao{
@@ -335,14 +335,14 @@ void Inicializar_aviao(Lista_aviao * lista){
     lista->tam = 0;
 }
 
-bool Vazia(Lista_aviao * lista){
+bool Vazia_lista_aviao(Lista_aviao * lista){
     for(int i = 0; i < 10; i++){
         lista->inicio->dado.poltrona[i] = false;
     }
     return lista->tam == 0;
 }
 
-void Inserir_aviao(Lista_aviao * lista, Aviao dado){
+void Inserir_lista_aviao(Lista_aviao * lista, Aviao dado){
     Celula_aviao *temp = (Celula_aviao*) malloc(sizeof(Celula_aviao));
     if(temp == NULL){
         return ;
@@ -357,21 +357,52 @@ void Inserir_aviao(Lista_aviao * lista, Aviao dado){
     lista->tam++;
 }
 
+void Gravar_arquivos_aviao (FILE *arq, Aviao dado){
+arq= fopen("dados_aviao.txt", "a+");
+    if (arq == NULL) {
+        cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
+    }else{
+        fprintf(arq, "%s\t%i\t%i %i %i %i %i %i %i %i %i\n",
+                dado.destino_id, dado.id, dado.poltrona[0], dado.poltrona[1], dado.poltrona[2], dado.poltrona[3], dado.poltrona[4],
+                dado.poltrona[5], dado.poltrona[6], dado.poltrona[7], dado.poltrona[8], dado.poltrona[9]);
+    }
+}
+
+void OpenFile_aviao(Lista_aviao *lista){
+Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
+    if(aux == NULL){
+        cout<<"\n\tNao ha memoria disponivel!";
+    } else {
+        FILE *arq=fopen("dados_aviao.txt", "r");
+        if(arq){
+            cout<<"\tLendo arquivo de Avioes...\n";
+            while(!feof(arq)){
+                if(!feof(arq)){
+                    fscanf(arq, "%[^\t]\t%i\t%i %i %i %i %i %i %i %i %i %i",
+                           &aux->dado.destino_id, &aux->dado.id, &aux->dado.poltrona[0], &aux->dado.poltrona[1], &aux->dado.poltrona[2], &aux->dado.poltrona[3], &aux->dado.poltrona[4],
+                           &aux->dado.poltrona[5], &aux->dado.poltrona[6], &aux->dado.poltrona[7], &aux->dado.poltrona[8], &aux->dado.poltrona[9]);
+                    //printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n",
+                            //aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
+                            //aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
+                    Inserir_lista_aviao(lista, aux->dado);
+                }
+            }
+        }
+    }
+free(aux);
+}
+
 void Imprimir_lista_aviao(Lista_aviao *lista){
     printf("\n\tTamanho da Lista: %i\n", lista->tam);
     for(Celula_aviao *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
+        printf("Saida, destino: %s\n", temp->dado.destino_id);
         printf("ID: %i \n", temp->dado.id);
         for(int i = 0; i < 10; i++){
             printf("Poltrona %i: %s \n", i, temp->dado.poltrona[i] ? "Ocupado":"Livre");
         }
+
     }
 }
-
-struct voo{
-    int id;
-    int aviao_id;
-    string destino;
-};
 
 struct passagens{
     int passagem_id;
@@ -382,23 +413,56 @@ struct passagens{
 
 // --------------------------------------------------------------------------------
 
+void Cadastro_passageiro_com_bagagem(FILE *arq, Lista_passageiro *lista, FILE *arq2, Lista_bagagem *lista2){
+Passageiro aux;
+int bag=0;
+    cout<<"\nNumero do CPF: ";
+    cin>>aux.cpf;
+
+    for(Celula_passageiro *temp=lista->inicio; temp!=NULL; temp=temp->prox){
+        if(aux.cpf==temp->dado.cpf){
+            cout<<"CPF ja cadastrado, insira outro: ";
+            cin>>aux.cpf;
+            temp=lista->inicio;
+        }
+    }
+
+    cin.ignore();
+    cout<<"\nNome completo: ";
+    gets(aux.nome);
+
+    cout<<"\nEndereco: ";
+    gets(aux.endereco);
+
+    cout<<"\nTelefone: ";
+    cin>>aux.telefone;
+
+    Inserir_lista_passageiro(lista, aux);
+    Gravar_arquivos_passageiros(arq, aux);
+
+    cout<<"\nDeseja despachar bagagem? [1] Sim [2] Nao";
+            do{
+                cin>>bag;
+                if(((bag < 1) || (bag > 2)))
+                    cout<<"Opcao invalida, digite novamente...";
+            }while((bag < 1) || (bag > 2));
+
+    if(bag==1){
+        Bagagem aux2;
+        cout<<"\nCPF do portador da bagagem: "<<aux.cpf;
+        aux2.cpf=aux.cpf;
+
+        cout<<"\nPeso da bagagem (Kg): ";
+        cin>>aux2.peso;
+
+        Inserir_lista_bagagem(lista2, aux2);
+        Gravar_arquivos_bagagem(arq2, aux2);
+        cout<<endl;
+    }
+}
+
 int main(){
 setlocale(LC_ALL,"portuguese");
-
-    voo voos[3];
-    Aviao avioes[3];
-
-    avioes[0].id = 0;
-    avioes[1].id = 1;
-    avioes[2].id = 2;
-
-    voos[0].destino = "BH -> SÃO PAULO";
-    voos[1].destino = "BH -> RIO";
-    voos[2].destino = "BH -> SALVADOR";
-
-    voos[0].id = 0;
-    voos[1].id = 1;
-    voos[2].id = 2;
 
 Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
 Inicializar_passageiro(tripulantes);
@@ -412,22 +476,44 @@ OpenFile_bagagens(bagagem);
 
 Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
 Inicializar_aviao(l_avioes);
-//Imprimir_lista_aviao(l_avioes);
+FILE *arq_aviao;
+OpenFile_aviao(l_avioes);
+/*
+if(Vazia_lista_aviao(l_avioes)){
+    Aviao avioes[3];
+
+    avioes[0].id = 0;
+    avioes[1].id = 1;
+    avioes[2].id = 2;
+
+    avioes[0].destino_id == "BH -> SÃO PAULO";
+    avioes[1].destino_id == "BH -> RIO";
+    avioes[2].destino_id == "BH -> SALVADOR";
+
+    Inserir_lista_aviao(l_avioes, avioes[0]);
+    Gravar_arquivos_aviao(arq_aviao, avioes[0]);
+    Inserir_lista_aviao(l_avioes, avioes[1]);
+    Gravar_arquivos_aviao(arq_aviao, avioes[1]);
+    Inserir_lista_aviao(l_avioes, avioes[2]);
+    Gravar_arquivos_aviao(arq_aviao, avioes[2]);
+}
+*/
+Imprimir_lista_aviao(l_avioes);
 //Inserir_aviao(l_avioes, avioes[0]);
 //Imprimir_lista_aviao(l_avioes);
-
+/*
     //--------  MENU
-int menu, n_passageiro=0, bag=0;
+int menu, adc_p=0;
 
 
 do{
-printf("\t----> Opções disponíveis: <----\n[1]-> Cadastrar passageiro;\n[2]-> Pesquisa passageiros de um voo;\n[3]-> Pesquisa passageiro em um voo;\n[4]-> Listas de espera;\n[5]-> Remover passageiro;\n[6]-> Bagagens (Despache, embarque e entrega);\n[7]-> Sair; \nEntrada: ");
+printf("\t----> Opcoes disponiveis: <----\n[1]-> Cadastrar passageiro;\n[2]-> Pesquisa todos passageiros de um voo;\n[3]-> Pesquisa passageiro em um voo;\n[4]-> Listas de espera;\n[5]-> Remover passageiro;\n[6]-> Bagagens (Despache, embarque e entrega);\n[7]-> Sair; \nEntrada: ");
 cin>>menu;
 if(menu==7){
     break;
 }
 if(menu < 1 || menu > 6){
-    cout<<"\t\tOpção inválida, digite novamente...\n";
+    cout<<"\t\tOpcao invalida, digite novamente...\n";
 }
 
     switch(menu){
@@ -436,31 +522,18 @@ if(menu < 1 || menu > 6){
 
         do{
         cout<<"\n\tCadastro passageiro:";
-
-            Cadastro_passageiro(arq_passageiro, tripulantes);
-
-            cout<<"Deseja despachar bagagem? [1] Sim [2] Nao. ";
-            do{
-                cin>>bag;
-                if(((bag < 1) || (bag > 2)))
-                    cout<<"Opcao invalida, digite novamente...";
-            }while((bag < 1) || (bag > 2));
-
-            if(bag==1){
-                Cadastro_bagagem(arq_bagagem, bagagem);
-            }
-
+            Cadastro_passageiro_com_bagagem(arq_passageiro, tripulantes, arq_bagagem, bagagem);
             //Linkar passagem
             //Limkar Voo
 
-            cout<<"\n\nCadastrar mais um passageiro: [1] Sim; [2] Nao. ";
+            cout<<"\nCadastrar mais um passageiro: [1] Sim; [2] Nao. ";
             do{
-                cin>>n_passageiro;
-                if(((n_passageiro < 1) || (n_passageiro > 2))){
-                    cout<<"Opção inválida, digite novamente...";
+                cin>>adc_p;
+                if(((adc_p < 1) || (adc_p > 2))){
+                    cout<<"Opçao invalida, digite novamente...";
                 }
-            }while((n_passageiro < 1) || (n_passageiro > 2));
-        }while(n_passageiro!=2);
+            }while((adc_p < 1) || (adc_p > 2));
+        }while(adc_p!=2);
 
     break;
 
@@ -488,6 +561,7 @@ if(menu < 1 || menu > 6){
 
 }while(menu!=7);
 
+*/
     //Cadastro_bagagem(arq_bagagem, bagagem, 2);
     //Imprimir_lista_bagagem(bagagem);
 
@@ -495,9 +569,6 @@ if(menu < 1 || menu > 6){
     //Imprimir_lista_passageiros(tripulantes);
 
     //pesquisaPassageiro(tripulantes, 123);
-
-
-
 
     free(bagagem);
     free(tripulantes);
