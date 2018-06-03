@@ -17,7 +17,7 @@ struct Passageiro{
 
 struct Celula_passageiro{
     Passageiro dado;
-    Celula_passageiro *prox;
+    Celula_passageiro *prox, *anterior;
 };
 
 struct Lista_passageiro{
@@ -28,6 +28,7 @@ struct Lista_passageiro{
 void Inicializar_passageiro(Lista_passageiro *lista){
     lista->inicio = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
     lista->inicio->prox = NULL;
+    lista->inicio->anterior = NULL;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
@@ -39,8 +40,10 @@ bool Vazia_passageiro(Lista_passageiro *lista){
 void Inserir_lista_passageiro(Lista_passageiro *lista, Passageiro dado){
 
     Celula_passageiro *temp = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
+
     temp->dado = dado;
     temp->prox = NULL;
+    temp->anterior = lista->fim;
 
     lista->fim->prox = temp;
     lista->fim = temp;
@@ -331,6 +334,8 @@ struct Lista_aviao{
 void Inicializar_aviao(Lista_aviao * lista){
     lista->inicio = (Celula_aviao*) malloc(sizeof(Celula_aviao));
     lista->inicio->prox = NULL;
+    lista->inicio->aterior = NULL;
+    lista->fim->aterior = lista->inicio;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
@@ -404,12 +409,14 @@ void Imprimir_lista_aviao(Lista_aviao *lista){
     }
 }
 
+
 struct passagens{
     int passagem_id;
     int voo_id;
     int passageiro_id;
     int poltrona_id;
 };
+
 
 // --------------------------------------------------------------------------------
 
@@ -460,6 +467,31 @@ int bag=0;
         cout<<endl;
     }
 }
+bool disponibilida_de_destino(int destino_id, Lista_de_voos * voos){
+    celula_voo * aux = (celula_voo*)malloc(sizeof(celula_voo));
+    aux = voos->primeiro->prox;
+    while(aux != NULL){
+        if(aux->dado.id == destino_id){
+            return true;
+        } else{
+            aux = aux->prox;
+        }
+    }
+    return false;
+}
+
+bool disponibilidade_de_poltrona(int id, Lista_de_voos * voos){
+
+}
+
+void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_voos * voos){
+    pesquisaPassageiro(l, cpf);
+    if(disponibilida_de_destino(destino_id, voos)){
+        if(disponibilidade_de_poltrona(destino_id, voos)){
+
+        }
+    }
+}
 
 int main(){
 setlocale(LC_ALL,"portuguese");
@@ -476,8 +508,8 @@ OpenFile_bagagens(bagagem);
 
 Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
 Inicializar_aviao(l_avioes);
-FILE *arq_aviao;
-OpenFile_aviao(l_avioes);
+//FILE *arq_aviao;
+//OpenFile_aviao(l_avioes);
 /*
 if(Vazia_lista_aviao(l_avioes)){
     Aviao avioes[3];
@@ -498,10 +530,8 @@ if(Vazia_lista_aviao(l_avioes)){
     Gravar_arquivos_aviao(arq_aviao, avioes[2]);
 }
 */
-Imprimir_lista_aviao(l_avioes);
-//Inserir_aviao(l_avioes, avioes[0]);
 //Imprimir_lista_aviao(l_avioes);
-/*
+
     //--------  MENU
 int menu, adc_p=0;
 
@@ -519,13 +549,12 @@ if(menu < 1 || menu > 6){
     switch(menu){
 
     case 1:
-
+    
         do{
         cout<<"\n\tCadastro passageiro:";
             Cadastro_passageiro_com_bagagem(arq_passageiro, tripulantes, arq_bagagem, bagagem);
             //Linkar passagem
             //Limkar Voo
-
             cout<<"\nCadastrar mais um passageiro: [1] Sim; [2] Nao. ";
             do{
                 cin>>adc_p;
@@ -560,15 +589,6 @@ if(menu < 1 || menu > 6){
     }
 
 }while(menu!=7);
-
-*/
-    //Cadastro_bagagem(arq_bagagem, bagagem, 2);
-    //Imprimir_lista_bagagem(bagagem);
-
-    //Cadastro_passageiro(arq_passageiro, tripulantes, 1);
-    //Imprimir_lista_passageiros(tripulantes);
-
-    //pesquisaPassageiro(tripulantes, 123);
 
     free(bagagem);
     free(tripulantes);
