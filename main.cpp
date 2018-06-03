@@ -15,7 +15,7 @@ struct Passageiro{
 
 struct Celula_passageiro{
     Passageiro dado;
-    Celula_passageiro *prox;
+    Celula_passageiro *prox, *anterior;
 };
 
 struct Lista_passageiro{
@@ -26,6 +26,7 @@ struct Lista_passageiro{
 void Inicializar(Lista_passageiro *lista){
     lista->inicio = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
     lista->inicio->prox = NULL;
+    lista->inicio->anterior = NULL;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
@@ -37,8 +38,10 @@ bool Vazia(Lista_passageiro *lista){
 void Inserir_lista_passageiro(Lista_passageiro *lista, Passageiro dado){
 
     Celula_passageiro *temp = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
+
     temp->dado = dado;
     temp->prox = NULL;
+    temp->anterior = lista->fim;
 
     lista->fim->prox = temp;
     lista->fim = temp;
@@ -295,6 +298,8 @@ struct Lista_aviao{
 void Inicializar_aviao(Lista_aviao * lista){
     lista->inicio = (Celula_aviao*) malloc(sizeof(Celula_aviao));
     lista->inicio->prox = NULL;
+    lista->inicio->aterior = NULL;
+    lista->fim->aterior = lista->inicio;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
@@ -337,6 +342,16 @@ struct voo{
     string destino;
 };
 
+struct celula_voo{
+    voo dado;
+    celula_voo * prox, * anterior;
+};
+
+struct Lista_de_voos{
+    celula_voo * primeiro, * ultimo;
+    int tam;
+};
+
 struct passagens{
     int passagem_id;
     int voo_id;
@@ -344,10 +359,35 @@ struct passagens{
     int poltrona_id;
 };
 
+bool disponibilida_de_destino(int destino_id, Lista_de_voos * voos){
+    celula_voo * aux = (celula_voo*)malloc(sizeof(celula_voo));
+    aux = voos->primeiro->prox;
+    while(aux != NULL){
+        if(aux->dado.id == destino_id){
+            return true;
+        } else{
+            aux = aux->prox;
+        }
+    }
+    return false;
+}
+
+bool disponibilidade_de_poltrona(int id, Lista_de_voos * voos){
+
+}
+
+void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_voos * voos){
+    pesquisaPassageiro(l, cpf);
+    if(disponibilida_de_destino(destino_id, voos)){
+        if(disponibilidade_de_poltrona(destino_id, voos)){
+
+        }
+    }
+}
+
 int main(){
     setlocale(LC_ALL,"portuguese");
     FILE *arq_passageiro;
-
     voo voos[3];
     Aviao avioes[3];
 
@@ -363,16 +403,22 @@ int main(){
     voos[1].id = 1;
     voos[2].id = 2;
 
-    Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
+    avioes[0].destino_id = 0;
+    avioes[1].destino_id = 1;
+    avioes[2].destino_id = 2;
+
+    voos[0].aviao_id = 0;
+    voos[1].aviao_id = 1;
+    voos[2].aviao_id = 2;
+
+    Lista_aviao * av = (Lista_aviao*) malloc (sizeof(Lista_aviao));
+    Inicializar_aviao(av);
+
+    Lista_passageiro *tripulantes = (Lista_passageiro*) malloc (sizeof(Lista_passageiro));
     Inicializar(tripulantes);
     OpenFile_passageiros(tripulantes);
-
     Pilha_bagagem *bagagem=(Pilha_bagagem*) malloc (sizeof(Pilha_bagagem));
-
-
     Inicializar_bagagem(bagagem);
-
-
     Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
     Inicializar_aviao(l_avioes);
     Imprimir_lista_aviao(l_avioes);
@@ -384,14 +430,11 @@ int main(){
 
     Empilhar(bagagem, a);
     Empilhar(bagagem, b);
-
     Imprimir(bagagem);
-
 
     //Cadastro_passageiro(arq_passageiro, tripulantes, 2);
 
     Imprimir_lista(tripulantes);
-
     pesquisaPassageiro(tripulantes, 123);
 
     //free(bagagem);
