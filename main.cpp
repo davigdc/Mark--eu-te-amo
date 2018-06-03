@@ -5,6 +5,8 @@
 #include <locale.h>
 
 using namespace std;
+
+
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGEIROS
 struct Passageiro{
     int cpf;
@@ -55,12 +57,9 @@ arq= fopen("dados_passageiros.txt", "a+");
     }
 }
 
-Passageiro Cadastro_passageiro(FILE *arq, Lista_passageiro *lista, int n){
+Passageiro Cadastro_passageiro(FILE *arq, Lista_passageiro *lista){
 Passageiro aux;
 
-    for(int i=0; i<n; i++){
-
-        cout<<"\tPassageiro :"<<i+1;
         cout<<"\nNumero do CPF: ";
         cin>>aux.cpf;
 
@@ -85,7 +84,7 @@ Passageiro aux;
         Inserir_lista_passageiro(lista, aux);
         Gravar_arquivos_passageiros(arq, aux);
         cout<<endl;
-    }
+
     return aux;
 }
 
@@ -179,7 +178,7 @@ void Finalizar(Lista_passageiro *lista){
 
 // --------------------------------------------------------------------------------
 
-// -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A PILHA DE BAGAGENS
+// -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE BAGAGENS
 struct Bagagem{
     int cpf;
     int peso;
@@ -228,11 +227,8 @@ arq= fopen("dados_bagagens.txt", "a+");
     }
 }
 
-Bagagem Cadastro_bagagem(FILE *arq, Lista_bagagem *lista, int n){
+Bagagem Cadastro_bagagem(FILE *arq, Lista_bagagem *lista){
 Bagagem aux;
-
-    for(int i=0; i<n; i++){
-    cout<<"\tCadastro de bagagem: "<<i+1;
         cout<<"\nCPF do portador da bagagem: ";
         cin>>aux.cpf;
 
@@ -242,8 +238,6 @@ Bagagem aux;
         Inserir_lista_bagagem(lista, aux);
         Gravar_arquivos_bagagem(arq, aux);
         cout<<endl;
-    }
-
 }
 
 void OpenFile_bagagens(Lista_bagagem *lista){
@@ -316,7 +310,7 @@ void Finalizar_lista_bagagem(Lista_bagagem *lista){
 
 // --------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE AVIOES
 
 struct Aviao{
     int id;
@@ -386,8 +380,10 @@ struct passagens{
     int poltrona_id;
 };
 
+// --------------------------------------------------------------------------------
+
 int main(){
-    setlocale(LC_ALL,"portuguese");
+setlocale(LC_ALL,"portuguese");
 
     voo voos[3];
     Aviao avioes[3];
@@ -404,31 +400,103 @@ int main(){
     voos[1].id = 1;
     voos[2].id = 2;
 
-    Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
-    Inicializar_passageiro(tripulantes);
-    FILE *arq_passageiro;
-    OpenFile_passageiros(tripulantes);
+Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
+Inicializar_passageiro(tripulantes);
+FILE *arq_passageiro;
+OpenFile_passageiros(tripulantes);
 
-    Lista_bagagem *bagagem=(Lista_bagagem*) malloc (sizeof(Lista_bagagem));
-    Inicializar_bagagem(bagagem);
-    FILE *arq_bagagem;
-    OpenFile_bagagens(bagagem);
+Lista_bagagem *bagagem=(Lista_bagagem*) malloc (sizeof(Lista_bagagem));
+Inicializar_bagagem(bagagem);
+FILE *arq_bagagem;
+OpenFile_bagagens(bagagem);
+
+Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
+Inicializar_aviao(l_avioes);
+//Imprimir_lista_aviao(l_avioes);
+//Inserir_aviao(l_avioes, avioes[0]);
+//Imprimir_lista_aviao(l_avioes);
+
+    //--------  MENU
+int menu, n_passageiro=0, bag=0;
 
 
-    Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
-    Inicializar_aviao(l_avioes);
-    Imprimir_lista_aviao(l_avioes);
-    Inserir_aviao(l_avioes, avioes[0]);
-    Imprimir_lista_aviao(l_avioes);
+do{
+printf("\t----> Opções disponíveis: <----\n[1]-> Cadastrar passageiro;\n[2]-> Pesquisa passageiros de um voo;\n[3]-> Pesquisa passageiro em um voo;\n[4]-> Listas de espera;\n[5]-> Remover passageiro;\n[6]-> Bagagens (Despache, embarque e entrega);\n[7]-> Sair; \nEntrada: ");
+cin>>menu;
+if(menu==7){
+    break;
+}
+if(menu < 1 || menu > 6){
+    cout<<"\t\tOpção inválida, digite novamente...\n";
+}
 
+    switch(menu){
+
+    case 1:
+
+        do{
+        cout<<"\n\tCadastro passageiro:";
+
+            Cadastro_passageiro(arq_passageiro, tripulantes);
+
+            cout<<"Deseja despachar bagagem? [1] Sim [2] Nao. ";
+            do{
+                cin>>bag;
+                if(((bag < 1) || (bag > 2)))
+                    cout<<"Opcao invalida, digite novamente...";
+            }while((bag < 1) || (bag > 2));
+
+            if(bag==1){
+                Cadastro_bagagem(arq_bagagem, bagagem);
+            }
+
+            //Linkar passagem
+            //Limkar Voo
+
+            cout<<"\n\nCadastrar mais um passageiro: [1] Sim; [2] Nao. ";
+            do{
+                cin>>n_passageiro;
+                if(((n_passageiro < 1) || (n_passageiro > 2))){
+                    cout<<"Opção inválida, digite novamente...";
+                }
+            }while((n_passageiro < 1) || (n_passageiro > 2));
+        }while(n_passageiro!=2);
+
+    break;
+
+    case 2:
+        cout<<"\nop 2\n";
+    break;
+
+    case 3:
+        cout<<"\nop 3\n";
+    break;
+
+    case 4:
+        cout<<"\nop 4\n";
+    break;
+
+    case 5:
+        cout<<"\nop 5\n";
+    break;
+
+    case 6:
+        cout<<"\nop 6\n";
+    break;
+
+    }
+
+}while(menu!=7);
 
     //Cadastro_bagagem(arq_bagagem, bagagem, 2);
-    Imprimir_lista_bagagem(bagagem);
+    //Imprimir_lista_bagagem(bagagem);
 
     //Cadastro_passageiro(arq_passageiro, tripulantes, 1);
-    Imprimir_lista_passageiros(tripulantes);
+    //Imprimir_lista_passageiros(tripulantes);
 
-    pesquisaPassageiro(tripulantes, 123);
+    //pesquisaPassageiro(tripulantes, 123);
+
+
 
 
     free(bagagem);
