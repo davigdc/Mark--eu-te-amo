@@ -316,7 +316,7 @@ void Finalizar_lista_bagagem(Lista_bagagem *lista){
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE AVIOES
 
 struct Aviao{
-    char destino_id[30];
+    char destino_id[20];
     int id;
     bool poltrona[10];
     //int destino_id;
@@ -419,14 +419,12 @@ void Imprimir_lista_aviao(Lista_aviao *lista){
     }
 }
 
-
 struct passagens{
     int passagem_id;
     int voo_id;
     int passageiro_id;
     int poltrona_id;
 };
-
 
 // --------------------------------------------------------------------------------
 
@@ -504,6 +502,7 @@ void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_
     }
 }
 */
+
 int main(){
 //setlocale(LC_ALL,"portuguese");
 
@@ -521,17 +520,27 @@ Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
 Inicializar_aviao(l_avioes);
 FILE *arq_aviao;
 OpenFile_aviao(l_avioes);
-/*
+
 if(Vazia_lista_aviao(l_avioes)){
     Aviao avioes[3];
+
+    sprintf(avioes[0].destino_id,"BH -> SAO PAULO");
+    sprintf(avioes[1].destino_id,"BH -> RIO");
+    sprintf(avioes[2].destino_id,"BH -> SALVADOR");
 
     avioes[0].id = 0;
     avioes[1].id = 1;
     avioes[2].id = 2;
 
-    avioes[0].destino_id == "BH -> SÃO PAULO";
-    avioes[1].destino_id == "BH -> RIO";
-    avioes[2].destino_id == "BH -> SALVADOR";
+    for(int i = 0; i < 10; i++){
+        avioes[0].poltrona[i] = 0;
+    }
+    for(int i = 0; i < 10; i++){
+        avioes[1].poltrona[i] = 0;
+    }
+    for(int i = 0; i < 10; i++){
+        avioes[2].poltrona[i] = 0;
+    }
 
     Inserir_lista_aviao(l_avioes, avioes[0]);
     Gravar_arquivos_aviao(arq_aviao, avioes[0]);
@@ -540,7 +549,7 @@ if(Vazia_lista_aviao(l_avioes)){
     Inserir_lista_aviao(l_avioes, avioes[2]);
     Gravar_arquivos_aviao(arq_aviao, avioes[2]);
 }
-*/
+
 //Imprimir_lista_aviao(l_avioes);
 
     //--------  MENU
@@ -600,7 +609,7 @@ if(menu < 1 || menu > 6){
     }
 
 }while(menu!=7);
-
+Imprimir_lista_aviao(l_avioes);
     free(bagagem);
     free(tripulantes);
     //free(l_avioes);
