@@ -316,14 +316,15 @@ void Finalizar_lista_bagagem(Lista_bagagem *lista){
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE AVIOES
 
 struct Aviao{
+    char destino_id[30];
     int id;
     bool poltrona[10];
-    string destino_id;
+    //int destino_id;
 };
 
 struct Celula_aviao{
     Aviao dado;
-    Celula_aviao * aterior, * prox;
+    Celula_aviao * prox;
 };
 
 struct Lista_aviao{
@@ -334,8 +335,8 @@ struct Lista_aviao{
 void Inicializar_aviao(Lista_aviao * lista){
     lista->inicio = (Celula_aviao*) malloc(sizeof(Celula_aviao));
     lista->inicio->prox = NULL;
-    lista->inicio->aterior = NULL;
-    lista->fim->aterior = lista->inicio;
+    //lista->inicio->aterior = NULL;
+    //lista->fim->aterior = lista->inicio;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
@@ -348,17 +349,23 @@ bool Vazia_lista_aviao(Lista_aviao * lista){
 }
 
 void Inserir_lista_aviao(Lista_aviao * lista, Aviao dado){
-    Celula_aviao *temp = (Celula_aviao*) malloc(sizeof(Celula_aviao));
-    if(temp == NULL){
-        return ;
-    }
-    temp->dado = dado;
-    temp->prox = NULL;
-    for(int i = 0; i < 10; i++){
-        temp->dado.poltrona[i] = false;
-    }
-    lista->fim->prox = temp;
-    lista->fim = temp;
+    /*
+    printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n"
+        dado.destino_id, dado.id, dado.poltrona[0], dado.poltrona[1], dado.poltrona[2], dado.poltrona[3], dado.poltrona[4],
+        dado.poltrona[5], dado.poltrona[6], dado.poltrona[7], dado.poltrona[8], dado.poltrona[9]);
+    */
+    Celula_aviao *aux = (Celula_aviao*) malloc(sizeof(Celula_aviao));
+
+    //if(temp == NULL){
+    //    return ;
+    //}
+    aux->dado = dado;
+    aux->prox = NULL;
+    //for(int i = 0; i < 10; i++){
+     //   temp->dado.poltrona[i] = 0;
+    //}
+    lista->fim->prox = aux;
+    lista->fim = aux;
     lista->tam++;
 }
 
@@ -367,7 +374,7 @@ arq= fopen("dados_aviao.txt", "a+");
     if (arq == NULL) {
         cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
     }else{
-        fprintf(arq, "%s\t%i\t%i %i %i %i %i %i %i %i %i\n",
+        fprintf(arq, "%s\t%i\t%i %i %i %i %i %i %i %i %i %i\n",
                 dado.destino_id, dado.id, dado.poltrona[0], dado.poltrona[1], dado.poltrona[2], dado.poltrona[3], dado.poltrona[4],
                 dado.poltrona[5], dado.poltrona[6], dado.poltrona[7], dado.poltrona[8], dado.poltrona[9]);
     }
@@ -383,13 +390,16 @@ Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
             cout<<"\tLendo arquivo de Avioes...\n";
             while(!feof(arq)){
                 if(!feof(arq)){
-                    fscanf(arq, "%[^\t]\t%i\t%i %i %i %i %i %i %i %i %i %i",
+                    fscanf(arq, "%[^\t]\t%i\t%i %i %i %i %i %i %i %i %i %i\n",
                            &aux->dado.destino_id, &aux->dado.id, &aux->dado.poltrona[0], &aux->dado.poltrona[1], &aux->dado.poltrona[2], &aux->dado.poltrona[3], &aux->dado.poltrona[4],
                            &aux->dado.poltrona[5], &aux->dado.poltrona[6], &aux->dado.poltrona[7], &aux->dado.poltrona[8], &aux->dado.poltrona[9]);
-                    //printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n",
-                            //aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
-                            //aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
+
                     Inserir_lista_aviao(lista, aux->dado);
+/*
+                    printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n",
+                            aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
+                            aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
+*/
                 }
             }
         }
@@ -467,6 +477,7 @@ int bag=0;
         cout<<endl;
     }
 }
+/*
 bool disponibilida_de_destino(int destino_id, Lista_de_voos * voos){
     celula_voo * aux = (celula_voo*)malloc(sizeof(celula_voo));
     aux = voos->primeiro->prox;
@@ -492,9 +503,9 @@ void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_
         }
     }
 }
-
+*/
 int main(){
-setlocale(LC_ALL,"portuguese");
+//setlocale(LC_ALL,"portuguese");
 
 Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
 Inicializar_passageiro(tripulantes);
@@ -508,8 +519,8 @@ OpenFile_bagagens(bagagem);
 
 Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
 Inicializar_aviao(l_avioes);
-//FILE *arq_aviao;
-//OpenFile_aviao(l_avioes);
+FILE *arq_aviao;
+OpenFile_aviao(l_avioes);
 /*
 if(Vazia_lista_aviao(l_avioes)){
     Aviao avioes[3];
@@ -549,7 +560,7 @@ if(menu < 1 || menu > 6){
     switch(menu){
 
     case 1:
-    
+
         do{
         cout<<"\n\tCadastro passageiro:";
             Cadastro_passageiro_com_bagagem(arq_passageiro, tripulantes, arq_bagagem, bagagem);
@@ -592,6 +603,6 @@ if(menu < 1 || menu > 6){
 
     free(bagagem);
     free(tripulantes);
-    free(l_avioes);
+    //free(l_avioes);
     return 0;
 }
