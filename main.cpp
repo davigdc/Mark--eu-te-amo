@@ -349,21 +349,11 @@ bool Vazia_lista_aviao(Lista_aviao * lista){
 }
 
 void Inserir_lista_aviao(Lista_aviao * lista, Aviao dado){
-    /*
-    printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n"
-        dado.destino_id, dado.id, dado.poltrona[0], dado.poltrona[1], dado.poltrona[2], dado.poltrona[3], dado.poltrona[4],
-        dado.poltrona[5], dado.poltrona[6], dado.poltrona[7], dado.poltrona[8], dado.poltrona[9]);
-    */
     Celula_aviao *aux = (Celula_aviao*) malloc(sizeof(Celula_aviao));
 
-    //if(temp == NULL){
-    //    return ;
-    //}
     aux->dado = dado;
     aux->prox = NULL;
-    //for(int i = 0; i < 10; i++){
-     //   temp->dado.poltrona[i] = 0;
-    //}
+
     lista->fim->prox = aux;
     lista->fim = aux;
     lista->tam++;
