@@ -140,7 +140,7 @@ Passageiro Remover_passageiro(Lista_passageiro *lista, int pos){
     return dado;
 }
 
-Passageiro pesquisaPassageiro( Lista_passageiro * l,int cpf){
+bool pesquisaPassageiro( Lista_passageiro * l,int cpf){
     Celula_passageiro * aux;
 
     aux = l->inicio->prox;
@@ -152,11 +152,13 @@ Passageiro pesquisaPassageiro( Lista_passageiro * l,int cpf){
             printf("\nENDEREÇO: %s", aux->dado.endereco);
             printf("\nTELEFONE: %i", aux->dado.telefone);
             cout<<endl;
-            return aux->dado;
+            return true;
         } else {
             aux = aux->prox;
         }
     }
+    cout << "CPF não cadastrado no sistema";
+    return false;
 }
 
 void Imprimir_lista_passageiros(Lista_passageiro *lista){
@@ -419,6 +421,19 @@ void Imprimir_lista_aviao(Lista_aviao *lista){
     }
 }
 
+bool pesquisa_aviao(Lista_aviao *lista, int voo_id){
+
+    for(Celula_aviao *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
+        if(temp->dado.id == voo_id){
+            printf("Saida, destino: %s\n", temp->dado.destino_id);
+            printf("ID: %i \n", temp->dado.id);
+            for(int i = 0; i < 10; i++){
+                printf("Poltrona %i: %s \n", i, temp->dado.poltrona[i] ? "Ocupado":"Livre");
+            }
+        }
+    }
+}
+
 
 struct passagens{
     int passagem_id;
@@ -427,6 +442,51 @@ struct passagens{
     int poltrona_id;
 };
 
+struct Celula_passagem{
+    passagens dado;
+    Celula_passagem * prox;
+};
+
+struct Lista_passagem{
+    Celula_passagem * inicio, * fim;
+    int tam;
+};
+
+void Inicializar_passagem(Lista_passagem * lista){
+     lista->inicio = (Celula_passagem*) malloc(sizeof(Celula_passagem));
+     lista->inicio->prox = NULL;
+    //lista->inicio->aterior = NULL;
+    //lista->fim->aterior = lista->inicio;
+    lista->fim = lista->inicio;
+    lista->tam = 0;
+
+}
+void OpenFile_passagem(Lista_aviao *lista){
+Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
+    if(aux == NULL){
+        cout<<"\n\tNao ha memoria disponivel!";
+    } else {
+        FILE *arq=fopen("dados_passagem.txt", "r");
+        if(arq){
+            cout<<"\tLendo arquivo de Avioes...\n";
+            while(!feof(arq)){
+                if(!feof(arq)){
+                    fscanf(arq, "%[^\t]\t%i\t%i %i %i %i %i %i %i %i %i %i\n",
+                           &aux->dado.destino_id, &aux->dado.id, &aux->dado.poltrona[0], &aux->dado.poltrona[1], &aux->dado.poltrona[2], &aux->dado.poltrona[3], &aux->dado.poltrona[4],
+                           &aux->dado.poltrona[5], &aux->dado.poltrona[6], &aux->dado.poltrona[7], &aux->dado.poltrona[8], &aux->dado.poltrona[9]);
+
+                    Inserir_lista_aviao(lista, aux->dado);
+/*
+                    printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n",
+                            aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
+                            aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
+*/
+                }
+            }
+        }
+    }
+free(aux);
+}
 
 // --------------------------------------------------------------------------------
 
@@ -521,6 +581,12 @@ Lista_aviao * l_avioes = (Lista_aviao *) malloc(sizeof(Lista_aviao));
 Inicializar_aviao(l_avioes);
 FILE *arq_aviao;
 OpenFile_aviao(l_avioes);
+
+Lista_passagem * l_passagem = (Lista_passagem *) malloc(sizeof(Lista_passagem));
+Inicializar_passagem(l_passagem);
+FILE *arq_passagem;
+//OpenFile_passagem(l_passagem);
+
 /*
 if(Vazia_lista_aviao(l_avioes)){
     Aviao avioes[3];
@@ -544,7 +610,7 @@ if(Vazia_lista_aviao(l_avioes)){
 //Imprimir_lista_aviao(l_avioes);
 
     //--------  MENU
-int menu, adc_p=0;
+int menu, adc_p=0, cpf=0, voo_id=0;
 
 
 do{
@@ -578,11 +644,23 @@ if(menu < 1 || menu > 6){
     break;
 
     case 2:
-        cout<<"\nop 2\n";
+        cout<<"\nop 2\n [2]-> Pesquisa todos passageiros de um voo\n";
+        cout<<"Numero do voo: ";
+        cin >> voo_id;
+        if(pesquisa_aviao(l_avioes, voo_id)){
+            for(Celula_passagem * p = l_passagem->inicio->prox; p != NULL; p = p->prox){
+                if(p->dado.voo_id == voo_id){
+                    pesquisaPassageiro(tripulantes, p->dado.passageiro_id);
+                }
+            }
+        }
+
+
     break;
 
     case 3:
         cout<<"\nop 3\n";
+        cout<<"";
     break;
 
     case 4:
