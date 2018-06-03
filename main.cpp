@@ -318,7 +318,7 @@ void Finalizar_lista_bagagem(Lista_bagagem *lista){
 // -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE AVIOES
 
 struct Aviao{
-    char destino_id[30];
+    char destino_id[20];
     int id;
     bool poltrona[10];
     //int destino_id;
@@ -351,21 +351,11 @@ bool Vazia_lista_aviao(Lista_aviao * lista){
 }
 
 void Inserir_lista_aviao(Lista_aviao * lista, Aviao dado){
-    /*
-    printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n"
-        dado.destino_id, dado.id, dado.poltrona[0], dado.poltrona[1], dado.poltrona[2], dado.poltrona[3], dado.poltrona[4],
-        dado.poltrona[5], dado.poltrona[6], dado.poltrona[7], dado.poltrona[8], dado.poltrona[9]);
-    */
     Celula_aviao *aux = (Celula_aviao*) malloc(sizeof(Celula_aviao));
 
-    //if(temp == NULL){
-    //    return ;
-    //}
     aux->dado = dado;
     aux->prox = NULL;
-    //for(int i = 0; i < 10; i++){
-     //   temp->dado.poltrona[i] = 0;
-    //}
+
     lista->fim->prox = aux;
     lista->fim = aux;
     lista->tam++;
@@ -421,6 +411,7 @@ void Imprimir_lista_aviao(Lista_aviao *lista){
     }
 }
 
+<<<<<<< HEAD
 bool pesquisa_aviao(Lista_aviao *lista, int voo_id){
 
     for(Celula_aviao *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
@@ -435,6 +426,8 @@ bool pesquisa_aviao(Lista_aviao *lista, int voo_id){
 }
 
 
+=======
+>>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
 struct passagens{
     int passagem_id;
     int voo_id;
@@ -442,6 +435,7 @@ struct passagens{
     int poltrona_id;
 };
 
+<<<<<<< HEAD
 struct Celula_passagem{
     passagens dado;
     Celula_passagem * prox;
@@ -481,12 +475,141 @@ Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
                             aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
                             aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
 */
+=======
+// --------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------- ESTRUTURAS LISTA DE ESPERA
+
+struct Lista_espera{
+    Celula_passageiro *inicio, *fim;
+    int tam;
+};
+
+void Inicializar_espera(Lista_espera *lista){
+    lista->inicio = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
+    lista->inicio->prox = NULL;
+    lista->inicio->anterior = NULL;
+    lista->fim = lista->inicio;
+    lista->tam = 0;
+}
+
+bool Vazia_espera(Lista_espera *lista){
+    return lista->inicio == lista->fim;
+}
+
+void Inserir_lista_espera(Lista_espera *lista, Passageiro dado){
+
+    Celula_passageiro *temp = (Celula_passageiro*) malloc(sizeof(Celula_passageiro));
+
+    temp->dado = dado;
+    temp->prox = NULL;
+    temp->anterior = lista->fim;
+
+    lista->fim->prox = temp;
+    lista->fim = temp;
+
+    lista->tam++;
+}
+
+void Gravar_arquivos_espera (FILE *arq, Passageiro dado){
+arq= fopen("dados_lista_espera.txt", "a+");
+    if (arq == NULL) {
+        cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
+    }else{
+        fprintf(arq, "%lld\t%s\t%s\t%lld\n", dado.cpf, dado.nome, dado.endereco, dado.telefone);
+    }
+}
+
+void OpenFile_espera(Lista_espera *lista){
+Celula_passageiro *aux = (Celula_passageiro*) malloc (sizeof(Celula_passageiro));
+    if(aux == NULL){
+        cout<<"\n\tNao ha memoria disponivel!";
+    } else {
+        FILE *arq=fopen("dados_lista_espera.txt", "r");
+        if(arq){
+            cout<<"\tLendo arquivo de passageiros...\n";
+            while(!feof(arq)){
+                if(!feof(arq)){
+                    fscanf(arq, "%i\t%[^\t]\t%[^\t]\t%i\n", &aux->dado.cpf, &aux->dado.nome, &aux->dado.endereco, &aux->dado.telefone);
+                    //printf("%i\t%s\t%s\t%i\n", aux->dado.cpf, aux->dado.nome, aux->dado.endereco, aux->dado.telefone);
+                    Inserir_lista_espera(lista, aux->dado);
+>>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
                 }
             }
         }
     }
 free(aux);
 }
+<<<<<<< HEAD
+=======
+
+Passageiro Remover_lista_espera(Lista_espera *lista, int pos){
+
+    // SE A LISTA NÃO POSSUIR A POSICAO INFORMADA RETORNA -1
+    if(pos < 1 || pos > lista->tam)
+        cout<<"\nPosicao nao encontrada" ;
+
+    // CRIA UM PONTEIRO PARA A CELULA SENTINELA
+    Celula_passageiro *CelAnt = lista->inicio;
+
+    // MOVE O PONTEIRO ATÉ A CELULAR ANTERIOR QUE SERA REMOVIDA
+    for(int i=0; i<pos-1; i++) CelAnt=CelAnt->prox;
+
+    // CRIA UM PONTEIRO PARA A CELULA QUE SERA REMOVIDO
+    Celula_passageiro *temp = CelAnt->prox;
+
+    // ATUALIZA O PONTEIRO DA LISTA
+    CelAnt->prox = temp->prox;
+
+    // ARMAZENA O DADO QUE SERA RETORNADO
+    Passageiro dado = temp->dado;
+    // LIBERA A MEMORIA DA CELULA REMOVIDA
+    free(temp);
+    // DIMINUI O TAMANHO DA LISTA
+    lista->tam--;
+
+    // RETORNA O DADO QUE ESTA NO INICIO DA LISTA
+    return dado;
+}
+
+Passageiro Pesquisa_lista_espera(Lista_espera * l,int cpf){
+    Celula_passageiro * aux;
+
+    aux = l->inicio->prox;
+
+    while(aux != NULL){
+        if(aux->dado.cpf == cpf){
+            printf("\nNUMERO DO CPF: %i", aux->dado.cpf);
+            printf("\nNOME COMPLETO: %s", aux->dado.nome);
+            printf("\nENDEREÇO: %s", aux->dado.endereco);
+            printf("\nTELEFONE: %i", aux->dado.telefone);
+            cout<<endl;
+            return aux->dado;
+        } else {
+            aux = aux->prox;
+        }
+    }
+}
+
+void Imprimir_lista_espera(Lista_espera *lista){
+    printf("\n\tTamanho da lista de espera: %i\n", lista->tam);
+    for(Celula_passageiro *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
+        printf("CPF: %i ", temp->dado.cpf);
+        printf("\nNOME: %s ", temp->dado.nome);
+        printf("\nENDERECO: %s ", temp->dado.endereco);
+        printf("\nTELEFONE: %i \n\n", temp->dado.telefone);
+    }
+}
+
+int Tamanho_lista_espera(Lista_espera *lista){
+    return lista->tam;
+}
+
+void Finalizar_lista_espera(Lista_espera *lista){
+    while(!Vazia_espera(lista))
+        Remover_lista_espera(lista,1);
+        free(lista->inicio);
+}
+>>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
 
 // --------------------------------------------------------------------------------
 
@@ -564,8 +687,9 @@ void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_
     }
 }
 */
+
 int main(){
-//setlocale(LC_ALL,"portuguese");
+setlocale(LC_ALL,"portuguese");
 
 Lista_passageiro *tripulantes=(Lista_passageiro*) malloc (sizeof(Lista_passageiro));
 Inicializar_passageiro(tripulantes);
@@ -582,32 +706,46 @@ Inicializar_aviao(l_avioes);
 FILE *arq_aviao;
 OpenFile_aviao(l_avioes);
 
+<<<<<<< HEAD
 Lista_passagem * l_passagem = (Lista_passagem *) malloc(sizeof(Lista_passagem));
 Inicializar_passagem(l_passagem);
 FILE *arq_passagem;
 //OpenFile_passagem(l_passagem);
 
 /*
+=======
+Lista_espera *espera =(Lista_espera*) malloc (sizeof(Lista_espera));
+Inicializar_espera(espera);
+FILE *arq_espera;
+OpenFile_espera(espera);
+
+>>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
 if(Vazia_lista_aviao(l_avioes)){
     Aviao avioes[3];
+
+    sprintf(avioes[0].destino_id,"BH -> SAO PAULO");
+    sprintf(avioes[1].destino_id,"BH -> RIO");
+    sprintf(avioes[2].destino_id,"BH -> SALVADOR");
 
     avioes[0].id = 0;
     avioes[1].id = 1;
     avioes[2].id = 2;
 
-    avioes[0].destino_id == "BH -> SÃO PAULO";
-    avioes[1].destino_id == "BH -> RIO";
-    avioes[2].destino_id == "BH -> SALVADOR";
+    for(int i = 0; i < 10; i++){
+        avioes[0].poltrona[i] = 0;
+    }
+    for(int i = 0; i < 10; i++){
+        avioes[1].poltrona[i] = 0;
+    }
+    for(int i = 0; i < 10; i++){
+        avioes[2].poltrona[i] = 0;
+    }
 
-    Inserir_lista_aviao(l_avioes, avioes[0]);
-    Gravar_arquivos_aviao(arq_aviao, avioes[0]);
-    Inserir_lista_aviao(l_avioes, avioes[1]);
-    Gravar_arquivos_aviao(arq_aviao, avioes[1]);
-    Inserir_lista_aviao(l_avioes, avioes[2]);
-    Gravar_arquivos_aviao(arq_aviao, avioes[2]);
+    for(int i=0; i<3; i++){
+        Inserir_lista_aviao(l_avioes, avioes[i]);
+        Gravar_arquivos_aviao(arq_aviao, avioes[i]);
+    }
 }
-*/
-//Imprimir_lista_aviao(l_avioes);
 
     //--------  MENU
 int menu, adc_p=0, cpf=0, voo_id=0;
@@ -681,6 +819,8 @@ if(menu < 1 || menu > 6){
 
     free(bagagem);
     free(tripulantes);
-    //free(l_avioes);
-    return 0;
+    free(l_avioes);
+    free(espera);
+
+return 0;
 }
