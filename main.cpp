@@ -898,14 +898,29 @@ if(menu < 1 || menu > 6){
 
     case 4:
         cout<<"\nop 4\n";
+        cout <<"[4]-> Listas de espera\n";
+        Imprimir_lista_espera(espera);
+
     break;
 
     case 5:
+        cpf = -1;
         cout<<"\nop 5\n";
+        cout<< "[5]-> Remover passageiro\n";
+        cout << "Digite o CPF";
+        cin >> cpf;
+        Remover_passageiro(tripulantes, cpf);
+
     break;
 
     case 6:
+        voo_id = -1;
         cout<<"\nop 6\n";
+        cout<<"[6]-> Bagagens (Despache, embarque e entrega)\n";
+        cout<<"Numero do voo";
+        cin >> voo_id;
+        Imprimir_lista_bagagem(bagagem);
+
     break;
 
     }
