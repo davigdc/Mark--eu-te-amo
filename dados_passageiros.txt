@@ -1,3 +1,7 @@
 123	Davi Goncalves	Rua A	33223558
 1234	Juan Lews	Rua B	32145678
 12345	Diego Rogrigues	Rua C	54789563
+123	Juan	Rua T	314567
+123	Carlos	Rua E	13456
+321	Renan	Rua J	12567
+789	Judas	Rua B	123567
