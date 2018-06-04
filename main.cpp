@@ -411,7 +411,6 @@ void Imprimir_lista_aviao(Lista_aviao *lista){
     }
 }
 
-<<<<<<< HEAD
 bool pesquisa_aviao(Lista_aviao *lista, int voo_id){
 
     for(Celula_aviao *temp = lista->inicio->prox; temp!=NULL; temp=temp->prox){
@@ -425,9 +424,6 @@ bool pesquisa_aviao(Lista_aviao *lista, int voo_id){
     }
 }
 
-
-=======
->>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
 struct passagens{
     int passagem_id;
     int voo_id;
@@ -435,7 +431,7 @@ struct passagens{
     int poltrona_id;
 };
 
-<<<<<<< HEAD
+
 struct Celula_passagem{
     passagens dado;
     Celula_passagem * prox;
@@ -475,7 +471,11 @@ Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
                             aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
                             aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
 */
-=======
+                }
+            }
+        }
+    }
+}
 // --------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------- ESTRUTURAS LISTA DE ESPERA
 
@@ -532,15 +532,12 @@ Celula_passageiro *aux = (Celula_passageiro*) malloc (sizeof(Celula_passageiro))
                     fscanf(arq, "%i\t%[^\t]\t%[^\t]\t%i\n", &aux->dado.cpf, &aux->dado.nome, &aux->dado.endereco, &aux->dado.telefone);
                     //printf("%i\t%s\t%s\t%i\n", aux->dado.cpf, aux->dado.nome, aux->dado.endereco, aux->dado.telefone);
                     Inserir_lista_espera(lista, aux->dado);
->>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
                 }
             }
         }
     }
 free(aux);
 }
-<<<<<<< HEAD
-=======
 
 Passageiro Remover_lista_espera(Lista_espera *lista, int pos){
 
@@ -609,7 +606,6 @@ void Finalizar_lista_espera(Lista_espera *lista){
         Remover_lista_espera(lista,1);
         free(lista->inicio);
 }
->>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
 
 // --------------------------------------------------------------------------------
 
@@ -706,20 +702,17 @@ Inicializar_aviao(l_avioes);
 FILE *arq_aviao;
 OpenFile_aviao(l_avioes);
 
-<<<<<<< HEAD
+
 Lista_passagem * l_passagem = (Lista_passagem *) malloc(sizeof(Lista_passagem));
 Inicializar_passagem(l_passagem);
 FILE *arq_passagem;
 //OpenFile_passagem(l_passagem);
 
-/*
-=======
 Lista_espera *espera =(Lista_espera*) malloc (sizeof(Lista_espera));
 Inicializar_espera(espera);
 FILE *arq_espera;
 OpenFile_espera(espera);
 
->>>>>>> f68ac71ae1c588460306ff36326023d41b82e9af
 if(Vazia_lista_aviao(l_avioes)){
     Aviao avioes[3];
 
