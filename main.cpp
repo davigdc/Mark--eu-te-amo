@@ -337,8 +337,6 @@ struct Lista_aviao{
 void Inicializar_aviao(Lista_aviao * lista){
     lista->inicio = (Celula_aviao*) malloc(sizeof(Celula_aviao));
     lista->inicio->prox = NULL;
-    //lista->inicio->aterior = NULL;
-    //lista->fim->aterior = lista->inicio;
     lista->fim = lista->inicio;
     lista->tam = 0;
 }
@@ -424,13 +422,16 @@ bool pesquisa_aviao(Lista_aviao *lista, int voo_id){
     }
 }
 
+// --------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------- ESTRUTURAS PARA GERENCIAR A LISTA DE PASSAGENS
+
 struct passagens{
     int passagem_id;
     int voo_id;
     int passageiro_id;
     int poltrona_id;
 };
-
 
 struct Celula_passagem{
     passagens dado;
@@ -443,39 +444,47 @@ struct Lista_passagem{
 };
 
 void Inicializar_passagem(Lista_passagem * lista){
-     lista->inicio = (Celula_passagem*) malloc(sizeof(Celula_passagem));
-     lista->inicio->prox = NULL;
-    //lista->inicio->aterior = NULL;
-    //lista->fim->aterior = lista->inicio;
+    lista->inicio = (Celula_passagem*) malloc(sizeof(Celula_passagem));
+    lista->inicio->prox = NULL;
     lista->fim = lista->inicio;
     lista->tam = 0;
 
 }
-void OpenFile_passagem(Lista_aviao *lista){
-Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
+
+void Gravar_arquivos_passagem (FILE *arq, passagens dado){
+arq= fopen("dados_passagem.txt", "a+");
+    if (arq == NULL) {
+        cout<<"\n\tErro na Leitura/Gravacao do arquivo!";
+    }else{
+        fprintf(arq, "%i\t%i\t%i\t%i\n", dado.passageiro_id, dado.passagem_id, dado.poltrona_id, dado.voo_id);
+    }
+}
+
+void OpenFile_passagem(Lista_passagem *lista){
+Celula_passagem *aux = (Celula_passagem*) malloc (sizeof(Celula_passagem));
     if(aux == NULL){
         cout<<"\n\tNao ha memoria disponivel!";
     } else {
         FILE *arq=fopen("dados_passagem.txt", "r");
         if(arq){
-            cout<<"\tLendo arquivo de Avioes...\n";
+            cout<<"\tLendo arquivo de passagens...\n";
             while(!feof(arq)){
                 if(!feof(arq)){
-                    fscanf(arq, "%[^\t]\t%i\t%i %i %i %i %i %i %i %i %i %i\n",
-                           &aux->dado.destino_id, &aux->dado.id, &aux->dado.poltrona[0], &aux->dado.poltrona[1], &aux->dado.poltrona[2], &aux->dado.poltrona[3], &aux->dado.poltrona[4],
-                           &aux->dado.poltrona[5], &aux->dado.poltrona[6], &aux->dado.poltrona[7], &aux->dado.poltrona[8], &aux->dado.poltrona[9]);
+                    fscanf(arq, "%i\t%i\t%i\t%i\n",
+                           &aux->dado.passageiro_id, &aux->dado.passagem_id, &aux->dado.poltrona_id, &aux->dado.voo_id);
 
-                    Inserir_lista_aviao(lista, aux->dado);
+                    //Inserir_lista_passagem(lista, aux->dado);
 /*
-                    printf("%s\t%i\t %i %i %i %i %i %i %i %i %i\n",
-                            aux->dado.destino_id, aux->dado.id, aux->dado.poltrona[0], aux->dado.poltrona[1], aux->dado.poltrona[2], aux->dado.poltrona[3], aux->dado.poltrona[4],
-                            aux->dado.poltrona[5], aux->dado.poltrona[6], aux->dado.poltrona[7], aux->dado.poltrona[8], aux->dado.poltrona[9]);
+                    printf("%i\t%i\t%i\t%i\n",
+                           aux->dado.passageiro_id, aux->dado.passagem_id, aux->dado.poltrona_id, aux->dado.voo_id);
 */
                 }
             }
         }
     }
 }
+
+
 // --------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------- ESTRUTURAS LISTA DE ESPERA
 
@@ -607,7 +616,7 @@ void Finalizar_lista_espera(Lista_espera *lista){
         free(lista->inicio);
 }
 
-// --------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------- FUNCOES DE CADASTRO OU PESQUISA
 
 void Cadastro_passageiro_com_bagagem(FILE *arq, Lista_passageiro *lista, FILE *arq2, Lista_bagagem *lista2){
 Passageiro aux;
@@ -684,6 +693,8 @@ void compra_de_passagem(int cpf, int destino_id, Lista_passageiro * l, Lista_de_
 }
 */
 
+// --------------------------------------------------------------------------------
+
 int main(){
 setlocale(LC_ALL,"portuguese");
 
@@ -742,7 +753,6 @@ if(Vazia_lista_aviao(l_avioes)){
 
     //--------  MENU
 int menu, adc_p=0, cpf=0, voo_id=0;
-
 
 do{
 printf("\t----> Opcoes disponiveis: <----\n[1]-> Cadastrar passageiro;\n[2]-> Pesquisa todos passageiros de um voo;\n[3]-> Pesquisa passageiro em um voo;\n[4]-> Listas de espera;\n[5]-> Remover passageiro;\n[6]-> Bagagens (Despache, embarque e entrega);\n[7]-> Sair; \nEntrada: ");
