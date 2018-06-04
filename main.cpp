@@ -451,6 +451,7 @@ void Inicializar_passagem(Lista_passagem * lista){
     lista->tam = 0;
 
 }
+
 void OpenFile_passagem(Lista_aviao *lista){
 Celula_aviao *aux = (Celula_aviao*) malloc (sizeof(Celula_aviao));
     if(aux == NULL){
@@ -791,7 +792,18 @@ if(menu < 1 || menu > 6){
 
     case 3:
         cout<<"\nop 3\n";
-        cout<<"";
+        cout<<"[3]-> Pesquisa passageiro em um voo\n";
+        cin >> cpf;
+        for(Celula_aviao * av = l_avioes->inicio->prox; av != NULL; av = av->prox){
+            if(av->dado.id == voo_id){
+                for(Celula_passagem * p = l_passagem->inicio->prox; p != NULL; p = p->prox){
+                    if(p->dado.voo_id == av->dado.id){
+                        pesquisaPassageiro(tripulantes, p->dado.passageiro_id);
+                    }
+                }
+            }
+        }
+
     break;
 
     case 4:
